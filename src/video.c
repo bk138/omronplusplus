@@ -27,6 +27,7 @@
 #include <time.h>
 #include "SDL.h"
 #include "SDL_gfxPrimitives.h"
+#include "SDL_opengl.h"
 
 #include "util.h"
 #include "video.h"
@@ -35,14 +36,63 @@
 
 
 
+
+/*
+  internal functions
+*/
+static GLuint vid_loadTexture(SDL_Surface *surface, GLfloat *texcoord);
+static void* vid_getGLFuncAddr(const char* p);
+
+
 /*
   internal variables
 */
-SDL_Surface *screen;
-//Uint32 videoflags =  SDL_OPENGL;
+SDL_Surface *screen;     // the screen we paint to
+SDL_Surface *gl_screen;  // in opengl mode, this gets shown
+SDL_Surface *teximage;   // we blit screen to teximage, which has the right format for
+GLuint texture;          // texture, which gets shown on gl_screen
+
 int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL | SDL_ANYFORMAT;
 
 char drivername[SMALL_STRSIZE]; 
+
+
+// GL function pointers
+GLubyte*(APIENTRY*vid_glGetString)(GLenum);
+GLenum(APIENTRY*vid_glGetError)(void);
+void(APIENTRY*vid_glEnable)(GLenum);
+void(APIENTRY*vid_glDisable)(GLenum);
+void(APIENTRY*vid_glMatrixMode)(GLenum);
+void(APIENTRY*vid_glViewport)(GLint,GLint,GLsizei,GLsizei);
+void(APIENTRY*vid_glOrtho)(GLdouble,GLdouble,GLdouble,GLdouble,GLdouble,GLdouble);
+void(APIENTRY*vid_glFrustum)(GLdouble,GLdouble,GLdouble,GLdouble,GLdouble,GLdouble);
+void(APIENTRY*vid_glBlendFunc)(GLenum,GLenum);
+void(APIENTRY*vid_glTexEnvf)(GLenum, GLenum, GLfloat);
+void(APIENTRY*vid_glClearColor)(GLclampf, GLclampf, GLclampf, GLclampf);
+void(APIENTRY*vid_glClear)(GLbitfield);
+void(APIENTRY*vid_glBegin)(GLenum );
+void(APIENTRY*vid_glEnd)(void);
+void(APIENTRY*vid_glVertex2i)(GLint, GLint);
+void(APIENTRY*vid_glVertex3i)(GLint, GLint, GLint);
+void(APIENTRY*vid_glBindTexture)(GLenum, GLuint);
+void(APIENTRY*vid_glTexCoord2f)(GLfloat, GLfloat);
+void(APIENTRY*vid_glTexParameteri)(GLenum, GLenum, GLint);
+void(APIENTRY*vid_glGenTextures)(GLsizei, GLuint*);
+void(APIENTRY*vid_glTexImage2D)( GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum,const GLvoid *);
+void(APIENTRY*vid_glLoadIdentity)( void );
+void(APIENTRY*vid_glMatrixMode)(GLenum );
+
+
+void(GLAPIENTRY*vid_glScalef)(GLfloat, GLfloat, GLfloat);
+void(APIENTRY*vid_glPushMatrix)(void);
+void(APIENTRY*vid_glPopMatrix)(void);
+void(APIENTRY*vid_glColor3f)(GLfloat,GLfloat,GLfloat );
+void(APIENTRY*vid_glTranslatef)(GLfloat,GLfloat,GLfloat );
+void(APIENTRY*vid_glVertex3f)(GLfloat, GLfloat, GLfloat);
+void(APIENTRY*vid_glRotatef)(GLfloat, GLfloat, GLfloat, GLfloat);
+
+
+
 
 
 /*
@@ -58,24 +108,137 @@ extern Sint8 quit;
 
 void vid_init()
 {
+  // 1. reset globals
+  SDL_FreeSurface(screen);
+  SDL_FreeSurface(gl_screen);
+  SDL_FreeSurface(teximage);
+  screen = gl_screen = teximage = NULL;
+  texture = 0;
+
+  // 2. halt an earlier started video subsys (in this order!!)
+  SDL_QuitSubSystem(SDL_INIT_VIDEO);
+  
+
 #ifdef unix    
   if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTTHREAD) < 0)
 #else
-    if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+  if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
 #endif
-      {
-	fprintf(stderr, "ERROR: could not initialize video/event subsystem:  %s\n", SDL_GetError());
-	exit(EXIT_FAILURE);
-      }
-
+    {
+      fprintf(stderr, "ERROR: could not initialize video/event subsystem:  %s\n", SDL_GetError());
+      exit(EXIT_FAILURE);
+    }
+  
   if(cfg->fullscreen)
    {
      videoflags ^= SDL_FULLSCREEN;  
      SDL_ShowCursor(SDL_DISABLE);
    }
 
-  vid_setMode(cfg->screen_x, cfg->screen_y);
 
+  /* 
+     do all opengl init stuff here
+  */
+  if(!cfg->opengl)
+    {
+      if((videoflags & SDL_OPENGL) == SDL_OPENGL)
+	videoflags ^= SDL_OPENGL;
+    }
+  else
+    {
+      int rgb_size[3];
+      int bpp;
+
+      // detect the display depth
+      if ( SDL_GetVideoInfo()->vfmt->BitsPerPixel <= 8 ) 
+	bpp = 8;
+      else 
+	bpp = 16;  /* More doesn't seem to work */
+		
+
+      /* Initialize the display */
+      switch (bpp) 
+	{
+	case 8:
+	  rgb_size[0] = 3;
+	  rgb_size[1] = 3;
+	  rgb_size[2] = 2;
+	  break;
+	case 15:
+	case 16:
+	  rgb_size[0] = 5;
+	  rgb_size[1] = 5;
+	  rgb_size[2] = 5;
+	  break;
+	default:
+	  rgb_size[0] = 8;
+	  rgb_size[1] = 8;
+	  rgb_size[2] = 8;
+	  break;
+	}
+
+      SDL_GL_SetAttribute( SDL_GL_RED_SIZE, rgb_size[0] );
+      SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, rgb_size[1] );
+      SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, rgb_size[2] );
+      SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+      SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+      // request a hw accelerated context
+      SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+      
+
+      /* Use the default GL library */
+      if (SDL_GL_LoadLibrary(NULL) < 0)
+	{
+	  fprintf(stderr, "WARNING: Unable to dynamically open GL lib : %s\n",SDL_GetError());
+	  cfg->opengl = 0;
+	}
+      else
+	{
+	  // finally add opengl flag 
+	  videoflags |= SDL_OPENGL;
+	 
+	  // get function addresses
+	  vid_glGetString = vid_getGLFuncAddr("glGetString");
+	  vid_glEnable = vid_getGLFuncAddr("glEnable");
+	  vid_glDisable = vid_getGLFuncAddr("glDisable");
+	  vid_glMatrixMode = vid_getGLFuncAddr("glMatrixMode");
+	  vid_glOrtho = vid_getGLFuncAddr("glOrtho");
+	  vid_glFrustum = vid_getGLFuncAddr("glFrustum");
+	  vid_glViewport = vid_getGLFuncAddr("glViewport");
+	  vid_glBlendFunc = vid_getGLFuncAddr("glBlendFunc");
+	  vid_glTexEnvf = vid_getGLFuncAddr("glTexEnvf");
+	  vid_glClearColor = vid_getGLFuncAddr("glClearColor");
+	  vid_glClear = vid_getGLFuncAddr("glClear");
+	  vid_glGetError = vid_getGLFuncAddr("glGetError");
+	  vid_glBegin = vid_getGLFuncAddr("glBegin");
+	  vid_glEnd = vid_getGLFuncAddr("glEnd");
+	  vid_glBindTexture = vid_getGLFuncAddr("glBindTexture");
+	  vid_glVertex2i = vid_getGLFuncAddr("glVertex2i");
+	  vid_glVertex3i = vid_getGLFuncAddr("glVertex3i");
+	  vid_glTexCoord2f = vid_getGLFuncAddr("glTexCoord2f");
+	  vid_glTexParameteri = vid_getGLFuncAddr("glTexParameteri");
+	  vid_glGenTextures = vid_getGLFuncAddr("glGenTextures");
+	  vid_glTexImage2D = vid_getGLFuncAddr("glTexImage2D");
+	  vid_glMatrixMode = vid_getGLFuncAddr("glMatrixMode");
+	  vid_glLoadIdentity = vid_getGLFuncAddr("glLoadIdentity");
+
+	  vid_glPushMatrix = vid_getGLFuncAddr("glPushMatrix");
+	  vid_glPopMatrix = vid_getGLFuncAddr("glPopMatrix");
+
+	  vid_glColor3f = vid_getGLFuncAddr("glColor3f");
+	  vid_glTranslatef = vid_getGLFuncAddr("glTranslatef");
+	  vid_glScalef = vid_getGLFuncAddr("glScalef");
+	  vid_glVertex3f = vid_getGLFuncAddr("glVertex3f");
+	  vid_glRotatef = vid_getGLFuncAddr("glRotatef");
+	}
+    }
+  /*
+    opengl stuff end
+  */
+
+  vid_setMode(cfg->screen_x, cfg->screen_y);
+ 
   // get name of video driver 
   SDL_VideoDriverName(drivername, SMALL_STRSIZE);
 
@@ -86,20 +249,83 @@ void vid_init()
 
 
 
+
+
 void vid_setMode(int width, int height)
 {
+  if(!cfg->opengl)
+    {
+      screen = SDL_SetVideoMode(width, height, cfg->screen_bpp, videoflags);
+      if(!screen)
+	{
+	  fprintf(stderr, "ERROR: could not open window: %s\n", SDL_GetError());
+	  exit(EXIT_FAILURE);
+	}
+    }
+  else
+    {
+      /*
+	here we have the opengl screen, but we can only use this
+	with opengl drawing functions, so we have the usual 2D screen
+	setup as well, to blit this on the gl screen later on...
+      */
+      gl_screen = SDL_SetVideoMode(width, height, cfg->screen_bpp, videoflags);
+      if(!gl_screen)
+	{
+	  fprintf(stderr, "ERROR: could not open window: %s\n", SDL_GetError());
+	  exit(EXIT_FAILURE);
+	}
 
+      SDL_FreeSurface(teximage);
+      teximage = NULL; // so we get a new one in loadTexture()
+      SDL_FreeSurface(screen);
+      
+      screen = SDL_CreateRGBSurface(SDL_SRCALPHA, width, height, cfg->screen_bpp,
+				    0, 0, 0, 0);
+
+     
+      /*
+	set/restore opengl context after SDL_SetVideoMode()
+      */
+      
+      // Note, there may be other things you need to change,
+      // depending on how you have your OpenGL state set up.
+      vid_glEnable(GL_DEPTH_TEST);
+      //vid_glDisable(GL_CULL_FACE);
+      //vid_glEnable(GL_CULL_FACE);
+      vid_glEnable(GL_TEXTURE_2D);
+
+      // This allows alpha blending of 2D textures with the scene
+      vid_glEnable(GL_BLEND);
+      vid_glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      vid_glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+      vid_glViewport(0, 0, gl_screen->w, gl_screen->h);
+      
+      // reset projection matrix
+      vid_glMatrixMode(GL_PROJECTION);
+      vid_glLoadIdentity();
+      //vid_glOrtho( -2, 2, 1.5, -1.5, 2.5, 8.5 );
+      vid_glFrustum( -2, 2, -1.5, 1.5, 20, 30 );
+
+      //vid_glOrtho(0.0, (GLdouble)gl_screen->w, (GLdouble)gl_screen->h, 0.0, -20, 20);
+      //vid_glFrustum(0.0, (GLdouble)gl_screen->w, (GLdouble)gl_screen->h, 0.0, 2.5, 8.5); 
+
+
+      // reset modelview matrix
+      vid_glMatrixMode(GL_MODELVIEW);
+      vid_glLoadIdentity();
+      vid_glTranslatef(0,0,-22);
+      vid_glScalef(1.6, 1.6, 1);
+      vid_glRotatef(10, 0, 1, 0); 
+      vid_glRotatef(10, 1, 0, 0); 
+
+     
+    }
+
+  // update cfg
   cfg->screen_x = width;
   cfg->screen_y = height;
-
-  //SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-  screen = SDL_SetVideoMode(cfg->screen_x, cfg->screen_y, cfg->screen_bpp, videoflags);
-  if (screen == NULL)
-    {
-      fprintf(stderr, "ERROR: could not open window: %s\n", SDL_GetError());
-      exit(EXIT_FAILURE);
-    }
 }
 
 
@@ -108,7 +334,117 @@ void vid_setMode(int width, int height)
 
 void vid_flip()
 {
-  SDL_Flip(screen);
+  if(!cfg->opengl)
+    SDL_Flip(screen);
+  else
+    {
+      static GLfloat red = 0.1, delta = 0.02;
+      static GLfloat ani_angle = 1, ani_steps = 0;
+      static GLenum gl_error;
+      static GLfloat texcoord[4];
+      static GLfloat texMinX, texMinY, texMaxX, texMaxY;
+
+      vid_loadTexture(screen, texcoord);
+
+      // Make texture coordinates easy to understand 
+      texMinX = texcoord[0];
+      texMinY = texcoord[1];
+      texMaxX = texcoord[2];
+      texMaxY = texcoord[3];
+
+      // pulsing background
+      red += delta;
+      if(red >= 0.5 || red <= 0.1)
+	delta = -delta;
+     
+      vid_glClearColor( red, 0.0, 0.0, 0.7 );
+      vid_glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      
+      vid_glMatrixMode(GL_MODELVIEW);
+      //vid_glPushMatrix();
+      //vid_glLoadIdentity();
+      //vid_glTranslatef(0,0,-4.5);
+      
+      if(ani_steps < 100)
+	++ani_steps;
+      else
+	{
+	  ani_steps = 0;
+	  vid_glLoadIdentity();
+	  vid_glTranslatef(0,0,-22);
+	  vid_glScalef(1.6, 1.6, 1);
+	  vid_glRotatef(10, 0, 1, 0); 
+	  vid_glRotatef(10, 1, 0, 0); 
+	}
+
+
+
+
+      if(ani_steps < 25) // left
+	vid_glRotatef(-ani_angle, 0, 1, 0); 
+      
+      if(ani_steps >= 25 && ani_steps < 50) // up
+	vid_glRotatef(-ani_angle, 1, 0, 0); 
+      
+      if(ani_steps >= 50 && ani_steps < 75) // right
+	vid_glRotatef(ani_angle, 0, 1, 0.465); 
+      
+      if(ani_steps >= 75 && ani_steps < 100) // down
+	vid_glRotatef(ani_angle, 1, 0, 0); 
+	
+      
+
+
+      // Show the image on the screen
+      vid_glBindTexture(GL_TEXTURE_2D, texture);
+      vid_glBegin(GL_TRIANGLE_STRIP);
+
+      vid_glTexCoord2f(texMinX, texMinY); vid_glVertex3f(-1,  1,  1 ); // upper left
+      vid_glTexCoord2f(texMinX, texMaxY); vid_glVertex3f(-1, -1,  1);  // lower left
+      vid_glTexCoord2f(texMaxX, texMinY); vid_glVertex3f( 1,  1,  1);  // upper right
+      vid_glTexCoord2f(texMaxX, texMaxY); vid_glVertex3f( 1, -1,  1);  // lower right
+
+      vid_glEnd();
+
+      vid_glBegin( GL_QUADS ); 
+
+      vid_glColor3f(0, 0,   1  );
+      vid_glVertex3f( 1,  1, -1);
+      vid_glVertex3f( 1,  1,  1);
+      vid_glVertex3f( 1, -1,  1);
+      vid_glVertex3f( 1, -1, -1);
+ 
+      vid_glColor3f(1, 1,   0  );
+      vid_glVertex3f( 1, -1, -1);
+      vid_glVertex3f( 1, -1,  1);
+      vid_glVertex3f(-1, -1,  1);
+      vid_glVertex3f(-1, -1, -1);
+ 
+      vid_glColor3f(0, 1, 0 );
+      vid_glVertex3f(-1, -1, -1);
+      vid_glVertex3f(-1, -1,  1);
+      vid_glVertex3f(-1,  1,  1);
+      vid_glVertex3f(-1,  1, -1);
+ 
+      vid_glColor3f(1, 0.1, 0.8);
+      vid_glVertex3f( 1,  1,  1);
+      vid_glVertex3f( 1,  1, -1);
+      vid_glVertex3f(-1,  1, -1);
+      vid_glVertex3f(-1,  1,  1);
+ 
+      vid_glEnd();
+
+
+      //vid_glPopMatrix();
+
+
+      SDL_GL_SwapBuffers();
+
+      // Check for GL error conditions. 
+      gl_error = vid_glGetError();
+      if( gl_error != GL_NO_ERROR ) 
+	fprintf(stderr, "WARNING: OpenGL error: %d\n", gl_error );
+    }
 }
 
 
@@ -134,6 +470,19 @@ void vid_printInfo()
   printf("using video driver: %s\n", drivername);
   printf("current display: %d bits-per-pixel.\n",vidinfo->vfmt->BitsPerPixel);
   printf("\na window manager is %savailable.\n\n", vidinfo->wm_available ? "" : "NOT " ); 
+
+  if(cfg->opengl)
+    {
+      printf("OpenGL Info:\n");
+      printf("Vendor     : %s\n", vid_glGetString( GL_VENDOR ) );
+      printf("Renderer   : %s\n", vid_glGetString( GL_RENDERER ) );
+      printf("Version    : %s\n", vid_glGetString( GL_VERSION ) );
+      int value;
+      SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &value );
+      printf("Double Buffering:      %s\n", value ? "enabled" : "off");
+      SDL_GL_GetAttribute( SDL_GL_ACCELERATED_VISUAL, &value );
+      printf("Hardware Accelaration: %s\n", value ? "enabled":"off" );
+    }
 }
 
 
@@ -160,32 +509,19 @@ void vid_toggleFullscreen()
   else
     SDL_ShowCursor(SDL_ENABLE);
 
+  // get a copy of current screen
+  SDL_Surface *backup = vid_copySurface(screen);
+  
+  // this corrupts the pixeldata in screen ...
+  videoflags ^= SDL_FULLSCREEN;
+  cfg->fullscreen = !cfg->fullscreen;
+  vid_setMode(cfg->screen_x, cfg->screen_y);
+  
+  // ... so restore from the backup
+  SDL_BlitSurface(backup, NULL, screen, NULL);
 
-  // only x11 driver supports SDL's own fs toggle :-(
-  if (strcmp(drivername, "x11") == 0 )
-    {
-      if ( SDL_WM_ToggleFullScreen(screen) == 0)
-	fprintf(stderr, "NOTICE: could not toggle fullscreen mode.\n");
-      videoflags ^= SDL_FULLSCREEN;
-      cfg->fullscreen = !cfg->fullscreen;
-    }
-
-  else
-    {
-      // get a copy of current screen
-      SDL_Surface *backup = vid_copySurface(screen);
-
-      // this corrupts the pixeldata in screen ...
-      videoflags ^= SDL_FULLSCREEN;
-      cfg->fullscreen = !cfg->fullscreen;
-      vid_setMode(cfg->screen_x, cfg->screen_y);
-
-      // ... so restore from the backup
-      SDL_BlitSurface(backup, NULL, screen, NULL);
-      vid_flip();
-
-      SDL_FreeSurface(backup);
-    }
+  
+  SDL_FreeSurface(backup);
 }
 
 
@@ -213,7 +549,88 @@ void vid_takeScreenshot()
 
 
 
+// fills the globals texture and teximage
+GLuint vid_loadTexture(SDL_Surface *surface, GLfloat *texcoord)
+{
+  int tex_w, tex_h;
+ 
 
+  /* Use the surface width and height expanded to powers of 2 */
+  tex_w = 1;
+  while(tex_w < surface->w)
+    tex_w <<= 1;
+  tex_h = 1;
+  while(tex_h < surface->h)
+    tex_h <<= 1;
+
+
+  texcoord[0] = 0.0f;			        /* Min X */
+  texcoord[1] = 0.0f;			        /* Min Y */
+  texcoord[2] = (GLfloat)surface->w / tex_w;	/* Max X */
+  texcoord[3] = (GLfloat)surface->h / tex_h;	/* Max Y */
+
+  if(!teximage)
+    {
+      teximage = SDL_CreateRGBSurface(
+				      SDL_SWSURFACE,
+				      tex_w, tex_h,
+				      32, 
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN /* OpenGL RGBA masks */
+				      0x000000FF, 
+				      0x0000FF00, 
+				      0x00FF0000, 
+				      0xFF000000
+#else
+				      0xFF000000,
+				      0x00FF0000, 
+				      0x0000FF00, 
+				      0x000000FF
+#endif
+				      );
+
+      if(!teximage) 
+	return 0;
+    }
+	
+
+  // Copy the surface into the GL texture image 
+  SDL_BlitSurface(surface, NULL, teximage, NULL);
+
+
+  // Create an OpenGL texture for the image 
+  if(!texture)
+    vid_glGenTextures(1, &texture);
+
+  vid_glBindTexture(GL_TEXTURE_2D, texture);
+  vid_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  vid_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  vid_glTexImage2D(GL_TEXTURE_2D,
+		   0,
+		   GL_RGBA,
+		   tex_w, tex_h,
+		   0,
+		   GL_RGBA,
+		   GL_UNSIGNED_BYTE,
+		   teximage->pixels);
+	
+  return texture;
+}
+
+
+
+void* vid_getGLFuncAddr(const char* p)
+{
+	void* f=SDL_GL_GetProcAddress(p);
+	if (f)
+		return f;
+	else
+	  {		
+	    fprintf(stderr, "ERROR: Unable to get OpenGL function pointer for %s\n",p);
+	    exit(EXIT_FAILURE);
+	  }
+
+	return NULL;
+}
 
 
 
