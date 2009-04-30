@@ -32,7 +32,7 @@
 #include "config.h"
 
 
-#define VERSION "0.5.0"
+#define VERSION "1.0.0-pre"
 
 
 
@@ -88,17 +88,12 @@ int main(int argc, char *argv[])
 	    --argc;
 	  }
 	else 
-#ifdef unix
-	  if ( strcmp(argv[argc], "-dga") == 0 ) 
-	    putenv("SDL_VIDEODRIVER=dga"); 
-	  else 
-#endif 
-	    if ( strcmp(argv[argc-1], "-fullscreen") == 0 ) 
-	      {                            
+	  if ( strcmp(argv[argc-1], "-fullscreen") == 0 ) 
+	    {                            
 		cfg->fullscreen = atoi(argv[argc]);                                 
 		--argc;
-	      }      
-	    else 
+	    }      
+	  else 
 	      if ( strcmp(argv[argc], "-vidinfo") == 0 ) 
 		vidinfo = 1;
 	      else 
@@ -145,27 +140,33 @@ int main(int argc, char *argv[])
 				--argc;
 			      }      
 			    else
-			      // now for options that take two args
-			      if(argc > 2)
-				{
-				  if(strcmp(argv[argc-2], "-auto") == 0 ) 
-				    {                            
-				      startauto = 1;
-				      cfg->autonom = strtod(argv[argc-1], NULL);               
-				      if(cfg->autonom <= 0 || cfg->autonom > 100) // crap entered
-					usage(argv[0]);
+			      if ( strcmp(argv[argc-1], "-opengl") == 0 ) 
+				{                            
+				  cfg->opengl = atoi(argv[argc]);                                 
+				  --argc;
+				}      
+			      else
+				// now for options that take two args
+				if(argc > 2)
+				  {
+				    if(strcmp(argv[argc-2], "-auto") == 0 ) 
+				      {                            
+					startauto = 1;
+					cfg->autonom = strtod(argv[argc-1], NULL);               
+					if(cfg->autonom <= 0 || cfg->autonom > 100) // crap entered
+					  usage(argv[0]);
 				      
-				      nr_pos = strtod(argv[argc], NULL); 
-				      if(!(nr_pos == 2 || nr_pos == 4))// crap entered
-					usage(argv[0]);
+					nr_pos = strtod(argv[argc], NULL); 
+					if(!(nr_pos == 2 || nr_pos == 4))// crap entered
+					  usage(argv[0]);
 				      
-				      argc -= 2;
-				    }
-				  else
-				    usage(argv[0]);
-				}
-			      else 
-				usage(argv[0]);
+					argc -= 2;
+				      }
+				    else
+				      usage(argv[0]);
+				  }
+				else 
+				  usage(argv[0]);
     }
 
 
@@ -240,14 +241,13 @@ void usage(char *appname)
   printf("\nUsage: %s [options]\n\navailable options:\n\n", appname);
   printf("   -version                  show version and exit\n");
   printf("   -vidinfo                  show video info\n");
+  printf("   -sndinfo                  show sound info\n");
   printf("   -width X                  set width\n");
   printf("   -height Y                 set height\n");
   printf("   -bpp BPP                  set bits-per-pixel\n");
-#ifdef unix
-  printf("   -dga                      enable DGA mode\n");
-#endif
   printf("   -statusbar 1|0            enable/disable status bar\n");
   printf("   -fullscreen 1|0           enable/disable fullscreen mode\n");
+  printf("   -opengl 1|0               enable/disable opengl mode\n");
   printf("   -sndinfo                  show sound info\n");
   printf("   -sound 1|0                enable/disable sound\n");
   printf("   -benchmark 1|0            enable/disable benchmark mode\n");
