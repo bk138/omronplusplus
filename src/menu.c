@@ -1128,8 +1128,10 @@ void mn_opts_vid()
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 3, "VIDEO MODES...");
       snprintf(onoff, BIG_STRSIZE, "FULLSCREEN: %s", screen->flags & SDL_FULLSCREEN ? "ON":"OFF");
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 4, onoff);
-      snprintf(onoff, BIG_STRSIZE, "STATUS BAR: %s", cfg->statusbar ? "ON":"OFF");
+      snprintf(onoff, BIG_STRSIZE, "OPENGL MODE: %s", cfg->opengl ? "ON":"OFF");
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 5, onoff);
+      snprintf(onoff, BIG_STRSIZE, "STATUS BAR: %s", cfg->statusbar ? "ON":"OFF");
+      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 6, onoff);
      
       mn_update(REFRESH);
 
@@ -1138,11 +1140,11 @@ void mn_opts_vid()
 	{
 	case SDLK_UP:
 	  snd_beep(SND_F_MOVE, SND_D_MOVE, 1);
-	  state = state == 0 ? 2 : state-1;
+	  state = state == 0 ? 3 : state-1;
 	  break;
 	case SDLK_DOWN:
 	  snd_beep(SND_F_MOVE, SND_D_MOVE, 1);
-	  state = state == 2 ? 0 : state+1;
+	  state = state == 3 ? 0 : state+1;
 	  break;    
 	case SDLK_RETURN:
 	case SDLK_KP_ENTER:
@@ -1156,6 +1158,10 @@ void mn_opts_vid()
 	      vid_toggleFullscreen();
 	      break;
 	    case 2:
+	      cfg->opengl = !cfg->opengl;
+	      vid_init();
+	      break;
+	    case 3:
 	      cfg->statusbar = !cfg->statusbar;
 	      break;
 	    default:
@@ -1512,18 +1518,17 @@ int mn_runSession()
 	      ++i;
 	    }
 	  
+	  // show the moves
+	  mn_draw(); 
+	  mn_update(0);
+
 	  if(cfg->benchmark)
 	    {
 	      Uint32 t2 = SDL_GetTicks();
 	      printf("Moving all armies took %i ms.\n", t2-t1);
 	    }
 
-
-	  // show the moves
-	  mn_draw(); 
-	  mn_update(0);
-
-
+	  
 	  // only one allegiance left?
 	  Sint8 winner = FREE;
 	  Sint8 only_one_left = 1;
