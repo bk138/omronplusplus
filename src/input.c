@@ -116,11 +116,6 @@ int inp_handleKeyboard()
 	    {
 	      switch( events[i].key.keysym.sym ) 
 		{
-#ifdef unix
-		case SDLK_f:
-		  vid_toggleFullscreen();
-		  break;
-#endif
 		case SDLK_m: 
 		  if(snd_toggle())
 		    mn_msg("SOUND ON");
@@ -219,10 +214,10 @@ SDLKey inp_checkInput()
   if(input != SDLK_UNKNOWN) // if it was something usable
     input = SDLK_UNKNOWN;   // indicate that we used it!
 
-#ifndef unix
-  if(retval == SDLK_f)        // win32 does not suppport switching
+  // functions that can't be called by the keyb thread
+  if(retval == SDLK_f)        // win32 and opengl mode do not suppport switching
     vid_toggleFullscreen();   // video modes from another thread
-#endif
+
 
   SDL_UnlockMutex(input_lock);
 
