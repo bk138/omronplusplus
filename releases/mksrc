@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# simple script for building releases
+#
+ 
+
+SRCDIR=../src
+DSTDIR=.
+
+VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`
+
+###
+
+make -C $SRCDIR clean
+
+rm -rf $DSTDIR/omron++_$VER
+mkdir $DSTDIR/omron++_$VER
+cp -a $SRCDIR/* $DSTDIR/omron++_$VER
+
+tar cfj omron++_$VER-src.tar.bz2 $DSTDIR/omron++_$VER
+
+
+
+

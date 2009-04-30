@@ -1,0 +1,34 @@
+omron++ 0.5.0 - "in the long run" - march 2009
+ * feedback if hotkey got pressed (like 'm' or 's')
+ * up to 4 armies
+ * different army colours
+ * retreat mode toggable via 1,2,3,4 keys
+
+omron++ 0.3.0beta - november 2007
+ * first omron++ with sound - we're going multimedia!
+ * fixed subtle bug in auto mode, now given % should have an effect,
+   also made it a bit fairer
+ * fixed another one that caused keyboard to lock  
+ * made blind armies a _lot_ faster by skipping useless scanning 
+ * benchmark mode 
+ * user friendly menu system!
+ * veteran system: default kill chance is 75% when attacking,
+   soldiers get a 5% bonus for every kill they made
+ * after countless requests: omron++ now suggests example values in 
+   user dialogues
+
+omron++ 0.2.9beta - november 2006
+ * rearranged messages in user input mode to pop up directly after false 
+   input, not at the end. thanks basti winkler for suggesting this ;-)
+ * following this, some cleanup to memory management
+ * fixed some memleaks
+ * first version to ship with a NEWS file ;-)
+
+omron++ 0.2.8beta - october 2006
+ * make threaded event handling default on unices
+ * starter hack for macosx package so it works with shipped libsdl
+ * ship linux package with libs
+
+omron++ 0.2.7beta - september 2006
+ * first beta, first public release
+ * essential features are in, more to come ;-)

@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# simple script for building releases
+#
+ 
+SRCDIR=../src
+DSTDIR=osx
+
+VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`
+
+#######
+ 
+make -f $SRCDIR/Makefile.mac -C $SRCDIR clean
+
+make -C $SRCDIR -f $SRCDIR/Makefile.mac
+
+mkdir -p $DSTDIR
+mv $SRCDIR/Omron++.app $DSTDIR
+
+cd $DSTDIR                                                                      
+zip -r omron++_$VER-osx.zip Omron++.app

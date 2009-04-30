@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# this is just quick'n'dirty and will probably not work on your system ...
+#
+# 
+
+SRCDIR=../src
+DSTDIR=win32
+
+
+VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`  
+
+echo clean...
+rm -rf $DSTDIR/*
+make -f $SRCDIR/Makefile.mgw -C $SRCDIR clean
+
+echo compile...
+make -f $SRCDIR/Makefile.mgw -C $SRCDIR
+
+echo copy...
+mkdir -p $DSTDIR
+cp $SRCDIR/omron++.exe  $DSTDIR
+i586-mingw32msvc-strip $DSTDIR/omron++.exe
+cp /usr/local/share/win32-cross-env/lib/SDL.dll $DSTDIR
+cp /usr/local/share/win32-cross-env/lib/SDL_gfx.dll $DSTDIR
+cp $SRCDIR/README $DSTDIR/README.TXT
+unix2dos $DSTDIR/README.TXT
+cp $SRCDIR/README-SDL $DSTDIR/README-SDL.TXT
+unix2dos $DSTDIR/README-SDL.TXT
+cp $SRCDIR/NEWS $DSTDIR/NEWS.TXT
+unix2dos $DSTDIR/NEWS.TXT
+
+echo zip...
+cd $DSTDIR
+zip omron++_$VER-win32.zip omron++.exe *.TXT *.dll
