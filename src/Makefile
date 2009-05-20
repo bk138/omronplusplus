@@ -38,14 +38,7 @@ install: $(OUTFILE)
 	install -m 755  $(OUTFILE) $(PREFIX)/bin
 
 
-
-main.o:	        util.h input.h config.h video.h sound.h menu.h 
-ki.o:		util.h config.h ki.h sound.h 
-video.o:	util.h config.h video.h
-util.o:		util.h 
-input.o:	config.h video.h sound.h menu.h input.h         
-sound.o:	config.h sound.h
-menu.o:		util.h input.h config.h video.h ki.h sound.h menu.h 
-config.o:       config.h util.h config.h lexwrite.h
-lexwrite.o:	lexwrite.h
+# you can depend on me
+depend:
+	makedepend -Y -- *.c 
 
