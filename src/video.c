@@ -83,7 +83,7 @@ void(APIENTRY*vid_glLoadIdentity)( void );
 void(APIENTRY*vid_glMatrixMode)(GLenum );
 
 
-void(GLAPIENTRY*vid_glScalef)(GLfloat, GLfloat, GLfloat);
+void(APIENTRY*vid_glScalef)(GLfloat, GLfloat, GLfloat);
 void(APIENTRY*vid_glPushMatrix)(void);
 void(APIENTRY*vid_glPopMatrix)(void);
 void(APIENTRY*vid_glColor3f)(GLfloat,GLfloat,GLfloat );

@@ -10,7 +10,7 @@
 SDLCONFIG=/usr/local/share/win32-cross-env/bin/sdl-config
 
 CC=i586-mingw32msvc-cc
-CFLAGS = $(shell $(SDLCONFIG) --cflags)-Wall -Winline -O2 -g
+CFLAGS = $(shell $(SDLCONFIG) --cflags) -Wall -Winline -O2 -g
 WINDRES = i586-mingw32msvc-windres
 LIBS = $(shell $(SDLCONFIG) --static-libs) -lSDL_gfx
 OUTFILE=omron++.exe 
