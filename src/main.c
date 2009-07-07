@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
   */
 
   printf("\n:::  omron++ welcomes you!  :::\n\n");
-  printf("Copyright (C) 2005 Christian Beier <dontmind@freeshell.org>.\n");
+  printf("Copyright (C) 2005-2009 Christian Beier <dontmind@freeshell.org>.\n");
   printf("omron++ is free software, licensed under the GPL.\n\n");
   printf("use 'p' to pause, 's' to take a screenshot, 'f' to toggle fullscreen mode, 'm' to (un)mute sound or 'q' to flee...\n\n");
 
