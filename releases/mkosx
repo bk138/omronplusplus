@@ -3,16 +3,21 @@
 # simple script for building releases
 #
  
-SRCDIR=../src
-DSTDIR=osx
+SRCDIR=src
+DSTDIR=releases/osx
 
 VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`
 
 #######
  
-make -f $SRCDIR/Makefile.mac -C $SRCDIR clean
 
-make -C $SRCDIR -f $SRCDIR/Makefile.mac
+cd ..
+
+./autogen.sh
+
+make clean
+
+make appbundle
 
 mkdir -p $DSTDIR
 mv $SRCDIR/Omron++.app $DSTDIR

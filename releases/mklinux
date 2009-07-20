@@ -3,8 +3,8 @@
 # simple script for building releases
 #
  
-SRCDIR=../src
-DSTDIR=linux
+SRCDIR=src
+DSTDIR=releases/linux
 
 VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`
 
@@ -13,8 +13,15 @@ VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`
 # make it look for libs in own dir
 export LD_RUN_PATH=.
 
-make -C $SRCDIR clean
-make -C $SRCDIR 
+cd ..
+
+make distclean
+
+./autogen.sh
+
+make clean
+
+make 
 
 strip $SRCDIR/omron++
 
@@ -22,9 +29,9 @@ rm -rf $DSTDIR/*
 mkdir -p $DSTDIR
 
 cp $SRCDIR/omron++ $DSTDIR
-cp $SRCDIR/README $DSTDIR
-cp $SRCDIR/README-SDL $DSTDIR
-cp $SRCDIR/NEWS $DSTDIR
+cp README $DSTDIR
+cp README-SDL $DSTDIR
+cp NEWS $DSTDIR
 cp $SRCDIR/*.xpm $DSTDIR
 cp /usr/lib/libSDL-1.2.so.0 $DSTDIR
 cp /usr/lib/libSDL_gfx.so.4 $DSTDIR

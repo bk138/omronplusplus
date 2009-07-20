@@ -56,15 +56,11 @@ the prerequisites:
     - libSDL-gfx devel package version >= 2.0.9
     
 to compile:
+    - ./autogen.sh
+    - if crosscompiling with MinGW: 
+      ./autogen.sh --build=<your build system type> --host=i586-mingw32msvc --with-sdl-config=<your win32 sdl-config>
     - type 'make' and cross fingers
-    - (you can also have a look into the makefile and turn on some
-      processor specific optimisations ...)
     
-to run:
-    - unless you compiled with 'make static', you'll need: 
-         - libSDL >= 1.2.0 
-         - libSDL-gfx version >= 2.0.9
-    - call the 'omron++' binary
 
 to install:
     - 'make install' as root 

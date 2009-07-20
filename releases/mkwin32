@@ -4,18 +4,22 @@
 #
 # 
 
-SRCDIR=../src
-DSTDIR=win32
+SRCDIR=src
+DSTDIR=releases/win32
 
 
 VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`  
 
+cd ..
+
 echo clean...
 rm -rf $DSTDIR/*
-make -f $SRCDIR/Makefile.mgw -C $SRCDIR clean
+make clean
+
 
 echo compile...
-make -f $SRCDIR/Makefile.mgw -C $SRCDIR
+./autogen.sh --build=x86_64-unknown-linux-gnu --host=i586-mingw32msvc --with-sdl-config=/usr/local/share/win32-cross-env/bin/sdl-config 
+make -C $SRCDIR
 
 echo copy...
 mkdir -p $DSTDIR
@@ -23,11 +27,11 @@ cp $SRCDIR/omron++.exe  $DSTDIR
 i586-mingw32msvc-strip $DSTDIR/omron++.exe
 cp /usr/local/share/win32-cross-env/lib/SDL.dll $DSTDIR
 cp /usr/local/share/win32-cross-env/lib/SDL_gfx.dll $DSTDIR
-cp $SRCDIR/README $DSTDIR/README.TXT
+cp README $DSTDIR/README.TXT
 unix2dos $DSTDIR/README.TXT
-cp $SRCDIR/README-SDL $DSTDIR/README-SDL.TXT
+cp README-SDL $DSTDIR/README-SDL.TXT
 unix2dos $DSTDIR/README-SDL.TXT
-cp $SRCDIR/NEWS $DSTDIR/NEWS.TXT
+cp NEWS $DSTDIR/NEWS.TXT
 unix2dos $DSTDIR/NEWS.TXT
 
 echo zip...
