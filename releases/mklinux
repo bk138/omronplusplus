@@ -8,6 +8,12 @@ DSTDIR=releases/linux
 
 VER=`grep "define VERSION"  ../src/main.c | awk '{print $3}' | sed s/\"//g`
 
+LIBS="libSDL-1.2.so.0 \
+      libvorbisfile.so.3 libvorbis.so.0 libogg.so.0 \
+      libsmpeg-0.4.so.0  libdirectfb-1.0.so.0 \
+      libmikmod.so.2 libx86.so.1 \
+      libfusion-1.0.so.0 libdirect-1.0.so.0 libvga.so.1"
+
 ###
 
 # make it look for libs in own dir
@@ -33,7 +39,11 @@ cp README $DSTDIR
 cp README-SDL $DSTDIR
 cp NEWS $DSTDIR
 cp $SRCDIR/*.xpm $DSTDIR
-cp /usr/lib/libSDL-1.2.so.0 $DSTDIR
+for i in $LIBS
+do
+    cp /usr/lib/$i $DSTDIR
+done
+
 
 
 cd $DSTDIR
