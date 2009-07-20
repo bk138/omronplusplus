@@ -34,7 +34,7 @@ cp README-SDL $DSTDIR
 cp NEWS $DSTDIR
 cp $SRCDIR/*.xpm $DSTDIR
 cp /usr/lib/libSDL-1.2.so.0 $DSTDIR
-cp /usr/lib/libSDL_gfx.so.4 $DSTDIR
+
 
 cd $DSTDIR
 mkdir omron++_$VER 
