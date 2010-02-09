@@ -5,13 +5,11 @@ SUBDIRS = \
 	src
 
 
-docdir = ${prefix}/doc/omron++
+docdir = $(datadir)/doc/omron++
 doc_DATA = \
 	README\
-	COPYING\
 	AUTHORS\
 	ChangeLog\
-	INSTALL\
 	NEWS
 
 Applicationsdir = $(datadir)/applications/

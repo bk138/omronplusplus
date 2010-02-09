@@ -1,0 +1,18 @@
+Source: omron++
+Section: games
+Priority: extra
+Maintainer: Christian Beier <dontmind@freeshell.org>
+Build-Depends: debhelper (>= 7), autotools-dev, libsdl1.2-dev, libsdl-gfx1.2-dev
+Standards-Version: 3.7.3
+Homepage: http://sourceforge.net/projects/omron++/
+
+Package: omron++
+Architecture: any
+Depends: ${shlibs:Depends},
+Description: The simplistic peace-endowing warfare simulation.
+ In omron++, you have up to four armies of pixels fighting each other.
+ You can choose the number of soldiers on each side and some other parameters.
+ If you give them a certain "mobsize", they will form groups of pixels (called 
+ mobs) and go hunting together.
+
+
