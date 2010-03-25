@@ -87,16 +87,11 @@ SDL_LIBS="`$SDLCONFIG --static-libs`"
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 
-dnl we prefer the static one
-LIBSDLGFX="`$SDLCONFIG --prefix`/lib/libSDL_gfx.a"
-if test ! -e $LIBSDLGFX; then
-   LIBSDLGFX="-lSDL_gfx"
-fi
 
 dnl this is more or less a rude guess, but so what...
 dnl we need this if SDL is installed in a nonstandard place (e.g. in case of MinGW)
 LDFLAGS+="-L`$SDLCONFIG --prefix`/lib"
-AC_CHECK_LIB(SDL_gfx,pixelRGBA,LIBS="$LIBSDLGFX $LIBS",AC_MSG_ERROR([SDL-gfx is required.]), -lSDL)
+AC_CHECK_LIB(SDL_gfx,pixelRGBA,,AC_MSG_ERROR([SDL-gfx is required.]), $SDL_LIBS)
 
 
 AC_OUTPUT([
