@@ -24,16 +24,14 @@
 #include "SDL.h"
 #include "SDL_thread.h"
 
+#include "../config.h"
+
 #include "video.h"
 #include "util.h"
 #include "input.h"
 #include "sound.h"
 #include "menu.h"
 #include "config.h"
-
-
-#define VERSION "1.0.0-pre"
-
 
 
 
