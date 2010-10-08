@@ -162,6 +162,7 @@ void mn_update(Uint32 d)
      
       message = NULL;
 
+      SDL_FreeSurface(black);
       SDL_FreeSurface(orig);
     }
 
