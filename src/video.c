@@ -491,11 +491,9 @@ void vid_printInfo()
 
 SDL_Surface* vid_copySurface(SDL_Surface *src)
 {
-  // create a surface and copy src in there
-  SDL_Surface *s = SDL_CreateRGBSurface(src->flags, src->w, src->h, src->format->BitsPerPixel,
-					0, 0, 0, 0);
-  SDL_BlitSurface(src, NULL, s, NULL);
-  return s;
+  // takes a surface and copies it to a new surface of the pixel format and colors of the video framebuffer,
+  // suitable for fast blitting onto the display surface
+  return SDL_DisplayFormat(src);
 }
 
 
