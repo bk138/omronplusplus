@@ -27,8 +27,9 @@
 #include <time.h>
 #include "SDL.h"
 #include "SDL_gfxPrimitives.h"
+#ifdef HAVE_OPENGL
 #include "SDL_opengl.h"
-
+#endif
 #include "util.h"
 #include "video.h"
 #include "config.h"
@@ -40,23 +41,26 @@
 /*
   internal functions
 */
+#ifdef HAVE_OPENGL
 static GLuint vid_loadTexture(SDL_Surface *surface, GLfloat *texcoord);
 static void* vid_getGLFuncAddr(const char* p);
-
+#endif
 
 /*
   internal variables
 */
 SDL_Surface *screen;     // the screen we paint to
+#ifdef HAVE_OPENGL
 SDL_Surface *gl_screen;  // in opengl mode, this gets shown
 SDL_Surface *teximage;   // we blit screen to teximage, which has the right format for
 GLuint texture;          // texture, which gets shown on gl_screen
+#endif
 
 int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL | SDL_ANYFORMAT;
 
 char drivername[SMALL_STRSIZE]; 
 
-
+#ifdef HAVE_OPENGL
 // GL function pointers
 GLubyte*(APIENTRY*vid_glGetString)(GLenum);
 GLenum(APIENTRY*vid_glGetError)(void);
@@ -90,7 +94,7 @@ void(APIENTRY*vid_glColor3f)(GLfloat,GLfloat,GLfloat );
 void(APIENTRY*vid_glTranslatef)(GLfloat,GLfloat,GLfloat );
 void(APIENTRY*vid_glVertex3f)(GLfloat, GLfloat, GLfloat);
 void(APIENTRY*vid_glRotatef)(GLfloat, GLfloat, GLfloat, GLfloat);
-
+#endif
 
 
 
@@ -110,10 +114,13 @@ void vid_init()
 {
   // 1. reset globals
   SDL_FreeSurface(screen);
+  screen = NULL;
+#ifdef HAVE_OPENGL
   SDL_FreeSurface(gl_screen);
   SDL_FreeSurface(teximage);
-  screen = gl_screen = teximage = NULL;
+  gl_screen = teximage = NULL;
   texture = 0;
+#endif
 
   // 2. halt an earlier started video subsys (in this order!!)
   SDL_QuitSubSystem(SDL_INIT_VIDEO);
@@ -144,6 +151,7 @@ void vid_init()
       if((videoflags & SDL_OPENGL) == SDL_OPENGL)
 	videoflags ^= SDL_OPENGL;
     }
+#ifdef HAVE_OPENGL
   else
     {
       int rgb_size[3];
@@ -236,6 +244,7 @@ void vid_init()
   /*
     opengl stuff end
   */
+#endif
 
   vid_setMode(cfg->screen_x, cfg->screen_y);
  
@@ -262,6 +271,7 @@ void vid_setMode(int width, int height)
 	  exit(EXIT_FAILURE);
 	}
     }
+#ifdef HAVE_OPENGL
   else
     {
       /*
@@ -319,9 +329,8 @@ void vid_setMode(int width, int height)
       vid_glScalef(1.6, 1.6, 1);
       vid_glRotatef(10, 0, 1, 0); 
       vid_glRotatef(10, 1, 0, 0); 
-
-     
     }
+#endif
 
   // update cfg
   cfg->screen_x = width;
@@ -336,6 +345,7 @@ void vid_flip()
 {
   if(!cfg->opengl)
     SDL_Flip(screen);
+#ifdef HAVE_OPENGL
   else
     {
       static GLfloat red = 0.1, delta = 0.02;
@@ -392,7 +402,6 @@ void vid_flip()
       if(ani_steps >= 75 && ani_steps < 100) // down
 	vid_glRotatef(ani_angle, 1, 0, 0); 
 	
-      
 
 
       // Show the image on the screen
@@ -445,6 +454,7 @@ void vid_flip()
       if( gl_error != GL_NO_ERROR ) 
 	fprintf(stderr, "WARNING: OpenGL error: %d\n", gl_error );
     }
+#endif
 }
 
 
@@ -471,6 +481,7 @@ void vid_printInfo()
   printf("current display: %d bits-per-pixel.\n",vidinfo->vfmt->BitsPerPixel);
   printf("\na window manager is %savailable.\n\n", vidinfo->wm_available ? "" : "NOT " ); 
 
+#ifdef HAVE_OPENGL
   if(cfg->opengl)
     {
       printf("OpenGL Info:\n");
@@ -483,6 +494,7 @@ void vid_printInfo()
       SDL_GL_GetAttribute( SDL_GL_ACCELERATED_VISUAL, &value );
       printf("Hardware Accelaration: %s\n", value ? "enabled":"off" );
     }
+#endif
 }
 
 
@@ -546,7 +558,7 @@ void vid_takeScreenshot()
 
 
 
-
+#ifdef HAVE_OPENGL
 // fills the globals texture and teximage
 GLuint vid_loadTexture(SDL_Surface *surface, GLfloat *texcoord)
 {
@@ -629,7 +641,7 @@ void* vid_getGLFuncAddr(const char* p)
 
 	return NULL;
 }
-
+#endif // HAVE_OPENGL
 
 
 
