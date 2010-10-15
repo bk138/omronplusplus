@@ -21,7 +21,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 
 /*
 exposed constants
