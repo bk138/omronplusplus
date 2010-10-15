@@ -44,4 +44,7 @@ void* ut_realloc(void *p, size_t newsz);
 
 void* ut_calloc(size_t n, size_t sz);
 
+void ut_log(const char* format, ...);
+
+
 #endif // UTIL_H

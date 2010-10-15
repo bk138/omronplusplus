@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
       --argc;
       if ( strcmp(argv[argc], "-version") == 0 ) 
 	{
-	  printf("%s\n", VERSION);
+	  ut_log("%s\n", VERSION);
 	  exit(EXIT_SUCCESS);
 	}
       else
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
   // initialize SDL
   if(SDL_Init(0) < 0) 
     {
-      fprintf(stderr, "could not initialize SDL:  %s\n", SDL_GetError());
+      ut_log("could not initialize SDL:  %s\n", SDL_GetError());
       exit(EXIT_FAILURE);
     }
   atexit(SDL_Quit);
@@ -202,10 +202,10 @@ int main(int argc, char *argv[])
     the user supplied valid args, greetings to anyone who made it...
   */
 
-  printf("\n:::  omron++ welcomes you!  :::\n\n");
-  printf("Copyright (C) 2005-2009 Christian Beier <dontmind@freeshell.org>.\n");
-  printf("omron++ is free software, licensed under the GPL.\n\n");
-  printf("use 'p' to pause, 's' to take a screenshot, 'f' to toggle fullscreen mode, 'm' to (un)mute sound or 'q' to flee...\n\n");
+  ut_log("\n:::  omron++ welcomes you!  :::\n\n");
+  ut_log("Copyright (C) 2005-2009 Christian Beier <dontmind@freeshell.org>.\n");
+  ut_log("omron++ is free software, licensed under the GPL.\n\n");
+  ut_log("use 'p' to pause, 's' to take a screenshot, 'f' to toggle fullscreen mode, 'm' to (un)mute sound or 'q' to flee...\n\n");
 
 
   /* 
@@ -238,21 +238,21 @@ int main(int argc, char *argv[])
 
 void usage(char *appname)
 {
-  printf("\nUsage: %s [options]\n\navailable options:\n\n", appname);
-  printf("   -version                  show version and exit\n");
-  printf("   -vidinfo                  show video info\n");
-  printf("   -sndinfo                  show sound info\n");
-  printf("   -width X                  set width\n");
-  printf("   -height Y                 set height\n");
-  printf("   -bpp BPP                  set bits-per-pixel\n");
-  printf("   -statusbar 1|0            enable/disable status bar\n");
-  printf("   -fullscreen 1|0           enable/disable fullscreen mode\n");
-  printf("   -opengl 1|0               enable/disable opengl mode\n");
-  printf("   -sndinfo                  show sound info\n");
-  printf("   -sound 1|0                enable/disable sound\n");
-  printf("   -benchmark 1|0            enable/disable benchmark mode\n");
-  printf("   -smp 1|0                  enable/disable multithreading\n");
-  printf("   -auto PERCENT POSITIONS   enable auto mode\n\n");
+  ut_log("\nUsage: %s [options]\n\navailable options:\n\n", appname);
+  ut_log("   -version                  show version and exit\n");
+  ut_log("   -vidinfo                  show video info\n");
+  ut_log("   -sndinfo                  show sound info\n");
+  ut_log("   -width X                  set width\n");
+  ut_log("   -height Y                 set height\n");
+  ut_log("   -bpp BPP                  set bits-per-pixel\n");
+  ut_log("   -statusbar 1|0            enable/disable status bar\n");
+  ut_log("   -fullscreen 1|0           enable/disable fullscreen mode\n");
+  ut_log("   -opengl 1|0               enable/disable opengl mode\n");
+  ut_log("   -sndinfo                  show sound info\n");
+  ut_log("   -sound 1|0                enable/disable sound\n");
+  ut_log("   -benchmark 1|0            enable/disable benchmark mode\n");
+  ut_log("   -smp 1|0                  enable/disable multithreading\n");
+  ut_log("   -auto PERCENT POSITIONS   enable auto mode\n\n");
 
   exit(EXIT_FAILURE);
 }

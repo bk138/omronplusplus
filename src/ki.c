@@ -1112,13 +1112,13 @@ static void ki_longRangeScan(army *a, const soldier *joe, Uint8 *choices, Uint8 
     }
 
 #ifdef DEBUG
-  printf("\nDEBUG: ki_longRangeScan\n");
-  printf("\nARMY %i - soldier nr: %i - SOLDIER pos: %i,%i\n",
+  ut_log("\nDEBUG: ki_longRangeScan\n");
+  ut_log("\nARMY %i - soldier nr: %i - SOLDIER pos: %i,%i\n",
 	 a->id, ki_whatsThere(joe->x, joe->y)->soldier_number, joe->x, joe->y);
   for(dir=0; dir < 8; ++dir)
-    printf("direction %i: %i of id 0\n", dir, scanresult[dir]);
+    ut_log("direction %i: %i of id 0\n", dir, scanresult[dir]);
   for(dir=8; dir < 16; ++dir)
-    printf("direction %i: %i of id 1\n", dir-8, scanresult[dir]);
+    ut_log("direction %i: %i of id 1\n", dir-8, scanresult[dir]);
 #endif
   
 }
@@ -1141,10 +1141,10 @@ static int ki_scanView(void *data)
     {
 
 #ifdef DEBUG
-      printf("\nDEBUG: ki_scanView\n");
-      printf("scan pos: %i,%i\n", scanpos.x, scanpos.y);
-      printf("sector: %i, rel %i,%i", v->dir, v->fields[j].x, v->fields[j].y );
-      printf("\nsector: %i, pos %i,%i", v->dir, scanpos.x + v->fields[j].x, scanpos.y + v->fields[j].y );
+      ut_log("\nDEBUG: ki_scanView\n");
+      ut_log("scan pos: %i,%i\n", scanpos.x, scanpos.y);
+      ut_log("sector: %i, rel %i,%i", v->dir, v->fields[j].x, v->fields[j].y );
+      ut_log("\nsector: %i, pos %i,%i", v->dir, scanpos.x + v->fields[j].x, scanpos.y + v->fields[j].y );
 #endif
     
       // this returns an army index for adressing armies[index]
@@ -1224,8 +1224,8 @@ static void ki_shoot(soldier* joe, Uint8 dir)
   // make sure we really shoot at someone
   if(field_enemy->army_index < 0)
     {
-      fprintf(stderr,"DEBUG: ki_shoot()\n");
-      fprintf(stderr,"OUCH! here should be an army index to shoot at!\n");
+      ut_log("DEBUG: ki_shoot()\n");
+      ut_log("OUCH! here should be an army index to shoot at!\n");
       exit(EXIT_FAILURE);
     }
 #endif
@@ -1274,14 +1274,14 @@ static void ki_move(soldier* joe, Sint8 dir)
   battleground_field* field_old = ki_whatsThere(x, y);
  
 #ifdef DEBUG     	    
-  printf("\nDEBUG: ki_move()\n");
+  ut_log("\nDEBUG: ki_move()\n");
   int olx = x, oly = y;
-  printf("old field @(%i, %i) before: army: %i - number: %i\n",
+  ut_log("old field @(%i, %i) before: army: %i - number: %i\n",
 	 x,y, ki_whatsThere(x, y)->army_index ,ki_whatsThere(x, y)->soldier_number);
 
   if(ki_whatsThere(x, y)->army_index < 0)
     {
-      fprintf(stderr, "OUCH! here should be an index!\n");
+      ut_log("OUCH! here should be an index!\n");
       exit(EXIT_FAILURE);
     }
 #endif
@@ -1338,9 +1338,9 @@ static void ki_move(soldier* joe, Sint8 dir)
   field_old->army_index = FREE;      
 
 #ifdef DEBUG     	    
-  printf("old field @(%i, %i) after : army: %i - number: %i\n", 
+  ut_log("old field @(%i, %i) after : army: %i - number: %i\n", 
 	 olx,oly, ki_whatsThere(olx, oly)->army_index ,ki_whatsThere(olx, oly)->soldier_number);
-  printf("new field @(%i, %i) : army: %i - number: %i\n", 
+  ut_log("new field @(%i, %i) : army: %i - number: %i\n", 
 	 x,y, ki_whatsThere(x, y)->army_index, ki_whatsThere(x, y)->soldier_number);
 #endif  
 

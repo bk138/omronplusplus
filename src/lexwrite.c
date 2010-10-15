@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "lexwrite.h"
-
+#include "util.h"
 
 
 
@@ -100,7 +100,7 @@ int lw_get(const char* keyword, const char* fmt, ... )
   // find keyword and adjust offset
   if((offsptr = strstr(offsptr, keyword)) == NULL)
     {
-      fprintf(stderr, "WARNING: Could not find (another) '%s' keyword in config file.\n", keyword);
+      ut_log( "WARNING: Could not find (another) '%s' keyword in config file.\n", keyword);
       return 0;
     }
   offsptr += strlen(keyword);
@@ -124,7 +124,7 @@ int lw_get(const char* keyword, const char* fmt, ... )
 
       if(value == NULL)
 	{
-	  fprintf(stderr,"WARNING: Something went wrong while reading values of keyword '%s' in config file.\n", keyword);
+	  ut_log("WARNING: Something went wrong while reading values of keyword '%s' in config file.\n", keyword);
 	  return 0;
 	}
       

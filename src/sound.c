@@ -25,6 +25,7 @@
 #include "SDL_thread.h"
 
 #include "config.h"
+#include "util.h"
 
 
 /*
@@ -62,7 +63,7 @@ int snd_init(Sint8 sndinfo)
 {
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
     {
-      fprintf(stderr, "WARNING: could not initialize sound subsystem:  %s\n", SDL_GetError());
+      ut_log( "WARNING: could not initialize sound subsystem:  %s\n", SDL_GetError());
       cfg->sound = 0;
       return 0;
     }
@@ -77,7 +78,7 @@ int snd_init(Sint8 sndinfo)
   
   if(SDL_OpenAudio(&des, &obt) < 0)
     {
-      fprintf(stderr, "WARNING: could not open audio: %s\n", SDL_GetError());
+      ut_log( "WARNING: could not open audio: %s\n", SDL_GetError());
       cfg->sound = 0;
       return 0;
     }
@@ -94,11 +95,11 @@ int snd_init(Sint8 sndinfo)
 
 void snd_printInfo()
 {
-  printf("\nSOUND INFORMATION:\n^^^^^^^^^^^^^^^^^\n");
-  printf("samplerate: %i\n", obt.freq);
-  printf("channels: %i\n", obt.channels); 
-  printf("buffer size (samples): %i\n", obt.samples);
-  printf("buffer size (bytes): %i\n", obt.size);
+  ut_log("\nSOUND INFORMATION:\n^^^^^^^^^^^^^^^^^\n");
+  ut_log("samplerate: %i\n", obt.freq);
+  ut_log("channels: %i\n", obt.channels); 
+  ut_log("buffer size (samples): %i\n", obt.samples);
+  ut_log("buffer size (bytes): %i\n", obt.size);
 }
 
 

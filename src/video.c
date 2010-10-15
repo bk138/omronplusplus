@@ -56,7 +56,7 @@ SDL_Surface *teximage;   // we blit screen to teximage, which has the right form
 GLuint texture;          // texture, which gets shown on gl_screen
 #endif
 
-int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL | SDL_ANYFORMAT;
+int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF;
 
 char drivername[SMALL_STRSIZE]; 
 
@@ -132,7 +132,7 @@ void vid_init()
   if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
 #endif
     {
-      fprintf(stderr, "ERROR: could not initialize video/event subsystem:  %s\n", SDL_GetError());
+      ut_log( "ERROR: could not initialize video/event subsystem:  %s\n", SDL_GetError());
       exit(EXIT_FAILURE);
     }
   
@@ -198,7 +198,7 @@ void vid_init()
       /* Use the default GL library */
       if (SDL_GL_LoadLibrary(NULL) < 0)
 	{
-	  fprintf(stderr, "WARNING: Unable to dynamically open GL lib : %s\n",SDL_GetError());
+	  ut_log( "WARNING: Unable to dynamically open GL lib : %s\n",SDL_GetError());
 	  cfg->opengl = 0;
 	}
       else
@@ -267,7 +267,7 @@ void vid_setMode(int width, int height)
       screen = SDL_SetVideoMode(width, height, cfg->screen_bpp, videoflags);
       if(!screen)
 	{
-	  fprintf(stderr, "ERROR: could not open window: %s\n", SDL_GetError());
+	  ut_log( "ERROR: could not open window: %s\n", SDL_GetError());
 	  exit(EXIT_FAILURE);
 	}
     }
@@ -282,7 +282,7 @@ void vid_setMode(int width, int height)
       gl_screen = SDL_SetVideoMode(width, height, cfg->screen_bpp, videoflags);
       if(!gl_screen)
 	{
-	  fprintf(stderr, "ERROR: could not open window: %s\n", SDL_GetError());
+	  ut_log( "ERROR: could not open window: %s\n", SDL_GetError());
 	  exit(EXIT_FAILURE);
 	}
 
@@ -452,7 +452,7 @@ void vid_flip()
       // Check for GL error conditions. 
       gl_error = vid_glGetError();
       if( gl_error != GL_NO_ERROR ) 
-	fprintf(stderr, "WARNING: OpenGL error: %d\n", gl_error );
+	ut_log( "WARNING: OpenGL error: %d\n", gl_error );
     }
 #endif
 }
@@ -476,23 +476,23 @@ void vid_printInfo()
 {
   const SDL_VideoInfo *vidinfo = SDL_GetVideoInfo();
 
-  printf("\nVIDEO INFORMATION:\n^^^^^^^^^^^^^^^^^\n");
-  printf("using video driver: %s\n", drivername);
-  printf("current display: %d bits-per-pixel.\n",vidinfo->vfmt->BitsPerPixel);
-  printf("\na window manager is %savailable.\n\n", vidinfo->wm_available ? "" : "NOT " ); 
+  ut_log("\nVIDEO INFORMATION:\n^^^^^^^^^^^^^^^^^\n");
+  ut_log("using video driver: %s\n", drivername);
+  ut_log("current display: %d bits-per-pixel.\n",vidinfo->vfmt->BitsPerPixel);
+  ut_log("\na window manager is %savailable.\n\n", vidinfo->wm_available ? "" : "NOT " ); 
 
 #ifdef HAVE_OPENGL
   if(cfg->opengl)
     {
-      printf("OpenGL Info:\n");
-      printf("Vendor     : %s\n", vid_glGetString( GL_VENDOR ) );
-      printf("Renderer   : %s\n", vid_glGetString( GL_RENDERER ) );
-      printf("Version    : %s\n", vid_glGetString( GL_VERSION ) );
+      ut_log("OpenGL Info:\n");
+      ut_log("Vendor     : %s\n", vid_glGetString( GL_VENDOR ) );
+      ut_log("Renderer   : %s\n", vid_glGetString( GL_RENDERER ) );
+      ut_log("Version    : %s\n", vid_glGetString( GL_VERSION ) );
       int value;
       SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &value );
-      printf("Double Buffering:      %s\n", value ? "enabled" : "off");
+      ut_log("Double Buffering:      %s\n", value ? "enabled" : "off");
       SDL_GL_GetAttribute( SDL_GL_ACCELERATED_VISUAL, &value );
-      printf("Hardware Accelaration: %s\n", value ? "enabled":"off" );
+      ut_log("Hardware Accelaration: %s\n", value ? "enabled":"off" );
     }
 #endif
 }
@@ -552,7 +552,7 @@ void vid_takeScreenshot()
   snprintf(ssfilename, BIG_STRSIZE, "omron++%s.bmp", date);
 
   if (SDL_SaveBMP(screen, ssfilename) < 0) 
-    fprintf(stderr, "NOTICE: could not take screenshot.\n");
+    ut_log( "NOTICE: could not take screenshot.\n");
 }
 
 
@@ -635,7 +635,7 @@ void* vid_getGLFuncAddr(const char* p)
 		return f;
 	else
 	  {		
-	    fprintf(stderr, "ERROR: Unable to get OpenGL function pointer for %s\n",p);
+	    ut_log("ERROR: Unable to get OpenGL function pointer for %s\n",p);
 	    exit(EXIT_FAILURE);
 	  }
 

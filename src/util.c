@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "util.h"
 
@@ -69,4 +70,19 @@ void* ut_calloc(size_t n, size_t sz)
 
 
 
+void ut_log(const char* format, ...)
+{
+  va_list args;
 
+  va_start(args, format);
+
+#ifdef ANDROID
+  __android_log_vprint(ANDROID_LOG_INFO, "Omron++", format, args);
+#else
+  vfprintf(stderr, format, args);
+  fflush(stderr);
+#endif
+  va_end(args);
+
+  return;
+}

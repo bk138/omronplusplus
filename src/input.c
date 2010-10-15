@@ -27,6 +27,7 @@
 #include "sound.h"
 #include "menu.h"
 #include "config.h"
+#include "util.h"
 
 
 
@@ -81,7 +82,7 @@ int inp_filterEvents(const SDL_Event *event)
       // This is important!  Queue it if we want to quit. 
     case SDL_QUIT: // not handled by keyb handler, this can be the window close button
       quit = 1;
-      printf("\nbye!\n");
+      ut_log("\nbye!\n");
       return 1;
 
       // keyboard events are queued as well
@@ -124,7 +125,7 @@ int inp_handleKeyboard()
 		  break;
 		case SDLK_q:
 		  quit = 1;
-		  printf("\nbye!\n");
+		  ut_log("\nbye!\n");
 		  break;
 		case SDLK_s: 
 		  vid_takeScreenshot();
