@@ -33,7 +33,7 @@ appbundle: src/omron++
 	mkdir -p $(bundle_contents)/Resources
 	echo "APPL????" > $(bundle_contents)/PkgInfo
 	$(INSTALL_PROGRAM) $< $(bundle_contents)/MacOS/
-	cp src/omron++.icns $(bundle_contents)/Resources
+	cp omron++.icns $(bundle_contents)/Resources
 	cp README  $(bundle_contents)/Resources/README.TXT
 	cp README-SDL $(bundle_contents)/Resources/README-SDL.TXT
 	cp NEWS    $(bundle_contents)/Resources
