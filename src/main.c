@@ -138,12 +138,14 @@ int main(int argc, char *argv[])
 				--argc;
 			      }      
 			    else
+#ifdef HAVE_OPNGL
 			      if ( strcmp(argv[argc-1], "-opengl") == 0 ) 
 				{                            
 				  cfg->opengl = atoi(argv[argc]);                                 
 				  --argc;
 				}      
 			      else
+#endif
 				// now for options that take two args
 				if(argc > 2)
 				  {

@@ -68,7 +68,7 @@ systemcfg* cfg_load()
   cfg->sound = 1;
   cfg->smp = 0;
   cfg->benchmark = 0;  
-  cfg->opengl = 1;
+  cfg->opengl = 0;
   cfg->fullscreen = 0;
   cfg->statusbar = 1;
   cfg->screen_bpp = 16;

@@ -1146,10 +1146,12 @@ void mn_opts_vid()
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 3, "VIDEO MODES...");
       snprintf(onoff, BIG_STRSIZE, "FULLSCREEN: %s", screen->flags & SDL_FULLSCREEN ? "ON":"OFF");
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 4, onoff);
-      snprintf(onoff, BIG_STRSIZE, "OPENGL MODE: %s", cfg->opengl ? "ON":"OFF");
-      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 5, onoff);
       snprintf(onoff, BIG_STRSIZE, "STATUS BAR: %s", cfg->statusbar ? "ON":"OFF");
+      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 5, onoff);
+#ifdef HAVE_OPENGL
+      snprintf(onoff, BIG_STRSIZE, "OPENGL MODE: %s", cfg->opengl ? "ON":"OFF");
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 6, onoff);
+#endif
      
       mn_update(REFRESH);
 
