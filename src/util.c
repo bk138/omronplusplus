@@ -25,6 +25,10 @@
 #include "util.h"
 
 
+int ut_lRand(int limit)
+{
+  return limit != 0 ? rand() % limit : 0; 
+}
 
 
 void* ut_malloc(size_t sz)

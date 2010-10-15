@@ -34,10 +34,7 @@ exposed constants
   exposed functions 
 */
 // return random number between 0 and limit, EXCLUDING limit ...  
-extern inline int ut_lRand(int limit)
-{
-  return limit != 0 ? rand() % limit : 0; 
-}
+int ut_lRand(int limit);
 
 void* ut_malloc(size_t sz);
 
