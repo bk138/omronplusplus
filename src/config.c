@@ -72,8 +72,8 @@ systemcfg* cfg_load()
   cfg->fullscreen = 0;
   cfg->statusbar = 1;
   cfg->screen_bpp = 16;
-  cfg->screen_x = 400;
-  cfg->screen_y = 300;
+  cfg->screen_x = 640;
+  cfg->screen_y = 480;
   cfg->autonom = 1.0;
 
   /*
