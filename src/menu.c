@@ -730,7 +730,12 @@ void mn_start_norm(int nr_pos)
 		  inp_textIn(mobsz_s, USRINPUT_SIZE, k);
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
-		      if((c->mbsz = atoi(mobsz_s)) < 1)
+		      if(strlen(mobsz_s))
+			c->mbsz = atoi(mobsz_s);
+		      else
+			c->mbsz = c_sugg->mbsz;
+
+		      if(c->mbsz < 1)
 			c->mbsz = 1;
 
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
@@ -765,7 +770,12 @@ void mn_start_norm(int nr_pos)
 		  inp_textIn(vrange_s, USRINPUT_SIZE, k);
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
-		      if((c->vrange = atoi(vrange_s)) < 1)
+		      if(strlen(vrange_s))
+			c->vrange = atoi(vrange_s);
+		      else
+			c->vrange = c_sugg->vrange;
+
+		      if(c->vrange < 1)
 			c->vrange = 1;
 		      //  try vrange
 		      if(ki_testArmyCfg(c))
@@ -809,7 +819,11 @@ void mn_start_norm(int nr_pos)
 		  inp_textIn(dist_s, USRINPUT_SIZE, k);
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
-		      c->dist = atoi(dist_s);
+		      if(strlen(dist_s))
+			c->dist = atoi(dist_s);
+		      else
+			c->dist = c_sugg->dist;
+		   
 		      // try count and dist
 		      if(ki_testArmyCfg(c))
 			{
@@ -841,8 +855,11 @@ void mn_start_norm(int nr_pos)
 		  inp_textIn(number_s, USRINPUT_SIZE, k);
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
-		      c->count = atoi(number_s);		     
-
+		      if(strlen(number_s))
+			c->count = atoi(number_s);
+		      else
+			c->count = c_sugg->count;
+		   		      
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
 		      snd_beep(SND_F_ENTER, SND_D_ENTER, 1);		      
