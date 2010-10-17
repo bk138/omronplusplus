@@ -56,7 +56,11 @@ SDL_Surface *teximage;   // we blit screen to teximage, which has the right form
 GLuint texture;          // texture, which gets shown on gl_screen
 #endif
 
-int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF;
+#ifdef ANDROID
+int videoflags = SDL_SWSURFACE | SDL_HWACCEL;
+#else
+int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL;
+#endif
 
 char drivername[SMALL_STRSIZE]; 
 
