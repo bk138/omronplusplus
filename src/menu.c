@@ -48,7 +48,11 @@
 #define SND_F_ENTER 500
 #define SND_D_ENTER 100
 
+#ifdef ANDROID
+#define HELPTEXT "simply follow the menu promptings and enter your choices, then watch the whole thing going..."
+#else
 #define HELPTEXT "simply follow the menu promptings and enter your choices, then watch the whole thing going...\n\n\nKEYBOARD SHORTCUTS:\n\n\n  TAKE SCREENSHOT: s\n\n  TOGGLE FULLSCREEN: f\n\n  TOGGLE PAUSE: p\n\n  TOGGLE SOUND: m\n\n  RETREAT MODE: 1, 2, 3 or 4\n\n\nfor 'advanced' usage type 'omron++ -h' to see the possible commandline arguments. (a special one is '-auto', which runs omron++ in some kind of standalone mode, without the need for user input. instead it randomly chooses the parameters itself. just give it the percentage of the possible maximum values to adjust performance to your machine. makes a nice but resourcehungry screensaver ;-)"
+#endif
 
 #define CREDITSHEADING "In order of appearance:"
 #define CREDITSTEXT "Jan Wirth, for the idea. Thanks, Jan...\n\n\n\nThomas 'Dante' Gaensewig, for his extensive alpha testing...\n\n\n\nBorstel Pasieka, for his patience as well...\n\n\n\nBasti Winkler, for beta testing and suggestions...\n\n\n\nMicha Gehring, for the initial bits of sound code..."
@@ -1134,21 +1138,31 @@ void mn_options()
 void mn_opts_vid()
 {
   Uint8 state = 0;
+ 
   char onoff[BIG_STRSIZE];
  
   while (!quit)
     {
+      Uint8 last_state = 0;
       // blacken backbuffer
       SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0)); 
 
       mn_bullet(cfg->screen_x/2 -65, (cfg->screen_y/10)*(3+state));
 
-      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 3, "VIDEO MODES...");
-      snprintf(onoff, BIG_STRSIZE, "FULLSCREEN: %s", screen->flags & SDL_FULLSCREEN ? "ON":"OFF");
-      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 4, onoff);
       snprintf(onoff, BIG_STRSIZE, "STATUS BAR: %s", cfg->statusbar ? "ON":"OFF");
+      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 3, onoff);
+     
+#ifndef ANDROID
+      ++last_state;
+      mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 4, "VIDEO MODES...");
+
+      ++last_state;
+      snprintf(onoff, BIG_STRSIZE, "FULLSCREEN: %s", screen->flags & SDL_FULLSCREEN ? "ON":"OFF");
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 5, onoff);
+#endif
+
 #ifdef HAVE_OPENGL
+      ++last_state;
       snprintf(onoff, BIG_STRSIZE, "OPENGL MODE: %s", cfg->opengl ? "ON":"OFF");
       mn_text(cfg->screen_x/2 -54, cfg->screen_y/10 * 6, onoff);
 #endif
@@ -1160,11 +1174,11 @@ void mn_opts_vid()
 	{
 	case SDLK_UP:
 	  snd_beep(SND_F_MOVE, SND_D_MOVE, 1);
-	  state = state == 0 ? 3 : state-1;
+	  state = state == 0 ? last_state : state-1;
 	  break;
 	case SDLK_DOWN:
 	  snd_beep(SND_F_MOVE, SND_D_MOVE, 1);
-	  state = state == 3 ? 0 : state+1;
+	  state = state == last_state ? 0 : state+1;
 	  break;    
 	case SDLK_RETURN:
 	case SDLK_KP_ENTER:
@@ -1172,17 +1186,17 @@ void mn_opts_vid()
 	  switch(state)
 	    {
 	    case 0:
-	      mn_opts_vid_modes();
+	      cfg->statusbar = !cfg->statusbar;
 	      break;
 	    case 1:
-	      vid_toggleFullscreen();
+	      mn_opts_vid_modes();
 	      break;
 	    case 2:
-	      cfg->opengl = !cfg->opengl;
-	      vid_init();
+	      vid_toggleFullscreen();
 	      break;
 	    case 3:
-	      cfg->statusbar = !cfg->statusbar;
+	      cfg->opengl = !cfg->opengl;
+	      vid_init();	    
 	      break;
 	    default:
 	      break;
