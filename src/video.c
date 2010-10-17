@@ -57,7 +57,7 @@ GLuint texture;          // texture, which gets shown on gl_screen
 #endif
 
 #ifdef ANDROID
-int videoflags = SDL_SWSURFACE | SDL_HWACCEL;
+int videoflags = SDL_SWSURFACE | SDL_HWACCEL | SDL_FULLSCREEN;
 #else
 int videoflags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL;
 #endif
@@ -482,8 +482,33 @@ void vid_printInfo()
 
   ut_log("\nVIDEO INFORMATION:\n^^^^^^^^^^^^^^^^^\n");
   ut_log("using video driver: %s\n", drivername);
+  ut_log("hardware video mem: %d\n", vidinfo->video_mem);
   ut_log("current display: %d bits-per-pixel.\n",vidinfo->vfmt->BitsPerPixel);
   ut_log("\na window manager is %savailable.\n\n", vidinfo->wm_available ? "" : "NOT " ); 
+
+
+  SDL_Rect** modes;
+  int i;
+    
+  /* Get available fullscreen/hardware modes */
+  modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+    
+  /* Check if there are any modes available */
+  if (modes== NULL) 
+    ut_log("No modes available!\n");
+  else
+    {
+      /* Check if our resolution is restricted */
+      if (modes == (SDL_Rect**)-1) 
+	ut_log("All resolutions available.\n");
+      else
+	{
+	  ut_log("Available fullscreen hardware modes\n");
+	  for (i=0; modes[i]; ++i)
+	    ut_log("  %d x %d\n", modes[i]->w, modes[i]->h);
+	}
+    }
+
 
 #ifdef HAVE_OPENGL
   if(cfg->opengl)
