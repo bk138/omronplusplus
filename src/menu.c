@@ -260,6 +260,12 @@ void mn_main()
 	  snd_beep(SND_F_ENTER, SND_D_ENTER, 1);
 	  action[state]();
 	  break;    
+#ifdef ANDROID
+	case SDLK_ESCAPE:
+	  snd_beep(SND_F_ENTER, SND_D_ENTER, 1);
+	  mn_quit();
+	  break;
+#endif
 	default:
 	  break;
 	}
