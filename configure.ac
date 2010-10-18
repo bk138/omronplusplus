@@ -93,6 +93,8 @@ dnl we need this if SDL is installed in a nonstandard place (e.g. in case of Min
 LDFLAGS+="-L`$SDLCONFIG --prefix`/lib"
 AC_CHECK_LIB(SDL_gfx,pixelRGBA,,AC_MSG_ERROR([SDL-gfx is required.]), $SDL_LIBS)
 
+dnl check for optional opengl
+AX_CHECK_GL
 
 AC_OUTPUT([
 Makefile

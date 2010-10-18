@@ -27,13 +27,14 @@
 #include <time.h>
 #include "SDL.h"
 #include "SDL_gfxPrimitives.h"
-#ifdef HAVE_OPENGL
-#include "SDL_opengl.h"
-#endif
 #include "util.h"
 #include "video.h"
 #include "config.h"
 
+
+#ifdef HAVE_OPENGL
+#include "SDL_opengl.h"
+#endif
 
 
 
