@@ -190,7 +190,9 @@ int main(int argc, char *argv[])
 
   // initialize video (and event) subsystem
   vid_init();
+#ifndef ANDROID
   if (vidinfo) // what did we get ?
+#endif
     vid_printInfo();
   
 
