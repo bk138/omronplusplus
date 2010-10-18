@@ -33,6 +33,7 @@ SDLKey inp_checkInput();
 // append char corresponding to k to string
 int inp_textIn(char *string, int limit, SDLKey k);
 
+void inp_printInfo();
 
 
 #endif

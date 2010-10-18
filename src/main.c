@@ -59,9 +59,7 @@ int main(int argc, char *argv[])
 {
   Sint8 startauto = 0;
   int nr_pos = 2;
-  Sint8 vidinfo = 0, sndinfo = 0;
-
-
+ 
   /*
     load config
   */
@@ -88,85 +86,79 @@ int main(int argc, char *argv[])
 	else 
 	  if ( strcmp(argv[argc-1], "-fullscreen") == 0 ) 
 	    {                            
-		cfg->fullscreen = atoi(argv[argc]);                                 
-		--argc;
+	      cfg->fullscreen = atoi(argv[argc]);                                 
+	      --argc;
 	    }      
 	  else 
-	      if ( strcmp(argv[argc], "-vidinfo") == 0 ) 
-		vidinfo = 1;
-	      else 
-		if ( strcmp(argv[argc-1], "-bpp") == 0 ) 
+	    if ( strcmp(argv[argc-1], "-bpp") == 0 ) 
+	      {                            
+		cfg->screen_bpp = atoi(argv[argc]);                                 
+		--argc;
+	      }      
+	    else
+	      if ( strcmp(argv[argc-1], "-width") == 0 ) 
+		{                            
+		  cfg->screen_x = atoi(argv[argc]);
+		  if(cfg->screen_x < 200)    
+		    cfg->screen_x = 200;
+		  --argc;
+		}      
+	      else
+		if ( strcmp(argv[argc-1], "-height") == 0 ) 
 		  {                            
-		    cfg->screen_bpp = atoi(argv[argc]);                                 
+		    cfg->screen_y = atoi(argv[argc]);
+		    if(cfg->screen_y < 200)    
+		      cfg->screen_y = 200;
 		    --argc;
-		  }      
+		  }
 		else
-		  if ( strcmp(argv[argc-1], "-width") == 0 ) 
+		  if ( strcmp(argv[argc-1], "-sound") == 0 ) 
 		    {                            
-		      cfg->screen_x = atoi(argv[argc]);
-		      if(cfg->screen_x < 200)    
-			cfg->screen_x = 200;
+		      cfg->sound = atoi(argv[argc]);                                 
 		      --argc;
 		    }      
 		  else
-		    if ( strcmp(argv[argc-1], "-height") == 0 ) 
+		    if ( strcmp(argv[argc-1], "-benchmark") == 0 ) 
 		      {                            
-			cfg->screen_y = atoi(argv[argc]);
-			if(cfg->screen_y < 200)    
-			  cfg->screen_y = 200;
+			cfg->benchmark = atoi(argv[argc]);
 			--argc;
-		      }
+		      }      
 		    else
-		      if ( strcmp(argv[argc-1], "-sound") == 0 ) 
+		      if ( strcmp(argv[argc-1], "-smp") == 0 ) 
 			{                            
-			  cfg->sound = atoi(argv[argc]);                                 
+			  cfg->smp = atoi(argv[argc]);                                 
 			  --argc;
 			}      
 		      else
-			if ( strcmp(argv[argc], "-sndinfo") == 0 ) 
-			  sndinfo = 1;
-			else
-			  if ( strcmp(argv[argc-1], "-benchmark") == 0 ) 
-			    {                            
-			      cfg->benchmark = atoi(argv[argc]);
-			      --argc;
-			    }      
-			  else
-			    if ( strcmp(argv[argc-1], "-smp") == 0 ) 
-			      {                            
-				cfg->smp = atoi(argv[argc]);                                 
-				--argc;
-			      }      
-			    else
 #ifdef HAVE_OPNGL
-			      if ( strcmp(argv[argc-1], "-opengl") == 0 ) 
-				{                            
-				  cfg->opengl = atoi(argv[argc]);                                 
-				  --argc;
-				}      
-			      else
+			if ( strcmp(argv[argc-1], "-opengl") == 0 ) 
+			  {                            
+			    cfg->opengl = atoi(argv[argc]);                                 
+			    --argc;
+			  }      
+			else
 #endif
-				// now for options that take two args
-				if(argc > 2)
-				  {
-				    if(strcmp(argv[argc-2], "-auto") == 0 ) 
-				      {                            
-					startauto = 1;
-					cfg->autonom = strtod(argv[argc-1], NULL);               
-					if(cfg->autonom <= 0 || cfg->autonom > 100) // crap entered
-					  usage(argv[0]);
+			  // now for options that take two args
+			  if(argc > 2)
+			    {
+			      if(strcmp(argv[argc-2], "-auto") == 0 ) 
+				{                            
+				  startauto = 1;
+				  cfg->autonom = strtod(argv[argc-1], NULL);               
+				  if(cfg->autonom <= 0 || cfg->autonom > 100) // crap entered
+				    usage(argv[0]);
 				      
-					nr_pos = strtod(argv[argc], NULL); 
-					if(!(nr_pos == 2 || nr_pos == 4))// crap entered
-					  usage(argv[0]);
+				  nr_pos = strtod(argv[argc], NULL); 
+				  if(!(nr_pos == 2 || nr_pos == 4))// crap entered
+				    usage(argv[0]);
 				      
-					argc -= 2;
-				      }
-				    else
-				      usage(argv[0]);
-				  }
-				else 
-				  usage(argv[0]);
+				  argc -= 2;
+				}
+			      else
+				usage(argv[0]);
+			    }
+			  else 
+			    usage(argv[0]);
     }
 
 
@@ -185,19 +177,15 @@ int main(int argc, char *argv[])
 
   // initialize sound subsystem
   snd_init();
-  if (sndinfo) 
-    snd_printInfo();
+  snd_printInfo();
 
   // initialize video (and event) subsystem
   vid_init();
-#ifndef ANDROID
-  if (vidinfo) // what did we get ?
-#endif
-    vid_printInfo();
+  vid_printInfo();
   
-
   // initialize input subsystem
   inp_init();
+  inp_printInfo();
   
 
   /*
@@ -242,15 +230,12 @@ void usage(char *appname)
 {
   ut_log("\nUsage: %s [options]\n\navailable options:\n\n", appname);
   ut_log("   -version                  show version and exit\n");
-  ut_log("   -vidinfo                  show video info\n");
-  ut_log("   -sndinfo                  show sound info\n");
   ut_log("   -width X                  set width\n");
   ut_log("   -height Y                 set height\n");
   ut_log("   -bpp BPP                  set bits-per-pixel\n");
   ut_log("   -statusbar 1|0            enable/disable status bar\n");
   ut_log("   -fullscreen 1|0           enable/disable fullscreen mode\n");
   ut_log("   -opengl 1|0               enable/disable opengl mode\n");
-  ut_log("   -sndinfo                  show sound info\n");
   ut_log("   -sound 1|0                enable/disable sound\n");
   ut_log("   -benchmark 1|0            enable/disable benchmark mode\n");
   ut_log("   -smp 1|0                  enable/disable multithreading\n");

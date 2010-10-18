@@ -49,6 +49,7 @@ extern char do_return[4];
 // input "buffer" and marker
 SDLKey input;
 SDL_mutex *input_lock;
+SDL_Joystick *joystick;
 
 /*
   internal functions:
@@ -69,10 +70,30 @@ void inp_init()
 
   // and start keyboard handler thread
   SDL_CreateThread(inp_handleKeyboard, NULL);
+
+  // open first joystick
+  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+    ut_log( "ERROR: could not initialize joystick subsystem:  %s\n", SDL_GetError());
+  else
+    if(SDL_NumJoysticks())
+      joystick = SDL_JoystickOpen(0);
 }
 
 
-
+void inp_printInfo()
+{
+  ut_log("\nINPUT INFORMATION:\n^^^^^^^^^^^^^^^^^\n"); 
+  if(joystick)
+    {
+      ut_log("Opened joystick is %s.\n", SDL_JoystickName(0));  
+      ut_log("   axes: %d\n", SDL_JoystickNumAxes(joystick));
+      ut_log("   buttons: %d\n", SDL_JoystickNumButtons(joystick));
+      ut_log("   hats: %d\n", SDL_JoystickNumHats(joystick));
+      ut_log("   balls: %d\n", SDL_JoystickNumBalls(joystick));
+    }
+  else
+    ut_log("No joystick attached.\n");  
+}
 
 
 int inp_filterEvents(const SDL_Event *event)
