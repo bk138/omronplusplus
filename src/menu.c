@@ -49,9 +49,9 @@
 #define SND_D_ENTER 100
 
 #ifdef ANDROID
-#define HELPTEXT "simply follow the menu promptings and enter your choices, then watch the whole thing going..."
+#define HELPTEXT "Simply follow the menu promptings and enter your choices, then watch the whole thing going...\n\n\nThe MENU key on your device enters menus and confirms choices, the BACK key leaves menus. You can navigate through the menus using dpad or trackball." 
 #else
-#define HELPTEXT "simply follow the menu promptings and enter your choices, then watch the whole thing going...\n\n\nKEYBOARD SHORTCUTS:\n\n\n  TAKE SCREENSHOT: s\n\n  TOGGLE FULLSCREEN: f\n\n  TOGGLE PAUSE: p\n\n  TOGGLE SOUND: m\n\n  RETREAT MODE: 1, 2, 3 or 4\n\n\nfor 'advanced' usage type 'omron++ -h' to see the possible commandline arguments. (a special one is '-auto', which runs omron++ in some kind of standalone mode, without the need for user input. instead it randomly chooses the parameters itself. just give it the percentage of the possible maximum values to adjust performance to your machine. makes a nice but resourcehungry screensaver ;-)"
+#define HELPTEXT "Simply follow the menu promptings and enter your choices, then watch the whole thing going...\n\n\nKEYBOARD SHORTCUTS:\n\n\n  TAKE SCREENSHOT: s\n\n  TOGGLE FULLSCREEN: f\n\n  TOGGLE PAUSE: p\n\n  TOGGLE SOUND: m\n\n  RETREAT MODE: 1, 2, 3 or 4\n\n\nFor 'advanced' usage type 'omron++ -h' to see the possible commandline arguments. (A special one is '-auto', which runs omron++ in some kind of standalone mode, without the need for user input. Instead it randomly chooses the parameters itself. Just give it the percentage of the possible maximum values to adjust performance to your machine. Makes a nice but resourcehungry screensaver ;-)"
 #endif
 
 #define CREDITSHEADING "In order of appearance:"
