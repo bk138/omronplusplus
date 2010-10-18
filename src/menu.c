@@ -178,8 +178,8 @@ void mn_update(Uint32 d)
 
 
 
-// return 0 if interrupted by ESC or quit
-// return 1 if time out or ENTER
+// return 0 if interrupted by any keypress or quit
+// return 1 if time out
 int mn_wait(Uint32 msecs)
 {
   SDLKey k;
@@ -188,10 +188,8 @@ int mn_wait(Uint32 msecs)
   while(waitmsecs > 0)
      {
        k = inp_checkInput();
-       if(k == SDLK_ESCAPE || quit)
+       if(k != SDLK_UNKNOWN || quit)
 	 return 0; // break
-       if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
-	 return 1; // go on
 
        waitmsecs -= 100;
        mn_update(100);
@@ -1804,7 +1802,7 @@ void mn_intro()
 	  filledCircleRGBA(screen, (cfg->screen_x/2), (cfg->screen_y/2), r, 255, ut_lRand(200), ut_lRand(255), 20);
 	  filledCircleRGBA(screen, (cfg->screen_x/2), (cfg->screen_y/2), r-5, 255, ut_lRand(200), ut_lRand(255), 20);
 	  vid_flip();
-	  if(inp_checkInput() == SDLK_ESCAPE || quit)
+	  if(inp_checkInput() != SDLK_UNKNOWN || quit) // some key pressed
 	    return;
 	}
       
