@@ -26,7 +26,7 @@
 #include "video.h"
 #include "sound.h"
 #include "menu.h"
-#include "config.h"
+#include "cfg.h"
 #include "util.h"
 
 

@@ -27,7 +27,7 @@
 #include "ki.h"
 #include "util.h"
 #include "sound.h"
-#include "config.h"
+#include "cfg.h"
 
 
 /*

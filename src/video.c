@@ -29,7 +29,7 @@
 #include "SDL_gfxPrimitives.h"
 #include "util.h"
 #include "video.h"
-#include "config.h"
+#include "cfg.h"
 
 
 #ifdef HAVE_OPENGL

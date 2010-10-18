@@ -9,8 +9,8 @@ AM_CFLAGS =\
 bin_PROGRAMS = omron++
 
 omron___SOURCES = \
-	config.c input.c  ki.c  lexwrite.c  main.c  menu.h  sound.h  util.h   video.h \
-	config.h input.h  ki.h  lexwrite.h          menu.c  sound.c  util.c   video.c
+	cfg.c input.c  ki.c  lexwrite.c  main.c  menu.h  sound.h  util.h   video.h \
+	cfg.h input.h  ki.h  lexwrite.h          menu.c  sound.c  util.c   video.c
 
 if MINGW
 omron___SOURCES += omron++.rc omron++.ico

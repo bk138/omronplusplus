@@ -33,7 +33,7 @@
 #include "util.h"
 #include "ki.h"
 #include "sound.h"
-#include "config.h"
+#include "cfg.h"
 
 /*
   internal constants

@@ -24,7 +24,7 @@
 #include "SDL.h"
 #include "SDL_thread.h"
 
-#include "config.h"
+#include "cfg.h"
 #include "util.h"
 
 
