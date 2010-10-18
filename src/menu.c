@@ -660,10 +660,10 @@ void mn_start_norm(int nr_pos)
   
   armycfg *ac = ki_preInit(nr_pos, army_at_pos);
   armycfg *c = ac; // c is just for counting through
-  char number_s[USRINPUT_SIZE] = "";
+  char count_s[USRINPUT_SIZE] = "";
   char dist_s[USRINPUT_SIZE] = "";
   char vrange_s[USRINPUT_SIZE] = "";
-  char mobsz_s[USRINPUT_SIZE] = ""; 
+  char mbsz_s[USRINPUT_SIZE] = ""; 
   char tmpstr[BIG_STRSIZE] = "";
   
 
@@ -708,7 +708,7 @@ void mn_start_norm(int nr_pos)
 #ifdef WIN32
 		case SDLK_z: // is this SDL's fault ?!? i'd suggest the usual suspects...
 #endif
-		  *number_s = *dist_s = *vrange_s = *mobsz_s = '\0';
+		  *count_s = *dist_s = *vrange_s = *mbsz_s = '\0';
 
 		  snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
 		  snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
@@ -718,7 +718,7 @@ void mn_start_norm(int nr_pos)
 		  break;
 
 		case SDLK_n: 
-		  *number_s = *dist_s = *vrange_s = *mobsz_s = '\0';
+		  *count_s = *dist_s = *vrange_s = *mbsz_s = '\0';
 		  state = 0;
 		  continue; // to while() head
 		  break;
@@ -728,18 +728,29 @@ void mn_start_norm(int nr_pos)
 
 	    case 4: // mobsize input
 	      mn_text(cfg->screen_x*0.1,cfg->screen_y*0.6,"mobsize:");
-	      mn_text((cfg->screen_x*0.1) + 10*8, cfg->screen_y*0.6, mobsz_s);
+	      mn_text((cfg->screen_x*0.1) + 10*8, cfg->screen_y*0.6, mbsz_s);
 	      if(state == 4)
 		{
 		  snprintf(tmpstr, SMALL_STRSIZE, "WHAT ABOUT %i?", c_sugg->mbsz);
 		  mn_hovertext(cfg->screen_x*0.1,cfg->screen_y*0.8, tmpstr);	
 
+		  // text input
 		  mn_prompt(cfg->screen_x*0.1 + 9*8,cfg->screen_y*0.6);
-		  inp_textIn(mobsz_s, USRINPUT_SIZE, k);
+		  inp_textIn(mbsz_s, USRINPUT_SIZE, k);
+		  if(strlen(mbsz_s))
+		    c->mbsz = atoi(mbsz_s);
+
+		  // arrow keys increase/decrease value
+		  if(k == SDLK_UP || k == SDLK_RIGHT)
+		    c->mbsz++;
+		  if(k == SDLK_DOWN || k == SDLK_LEFT)
+		    c->mbsz = c->mbsz == 0 ? 0 : c->mbsz-1;
+		  snprintf(mbsz_s, USRINPUT_SIZE, "%d", c->mbsz);
+
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
-		      if(strlen(mobsz_s))
-			c->mbsz = atoi(mobsz_s);
+		      if(strlen(mbsz_s))
+			c->mbsz = atoi(mbsz_s);
 		      else
 			c->mbsz = c_sugg->mbsz;
 
@@ -774,8 +785,19 @@ void mn_start_norm(int nr_pos)
 		  snprintf(tmpstr, SMALL_STRSIZE, "TRY %i! ", c_sugg->vrange);
 		  mn_hovertext(cfg->screen_x*0.1,cfg->screen_y*0.8, tmpstr);
 
+		  // text input
 		  mn_prompt(cfg->screen_x*0.1 + 17*8,cfg->screen_y*0.5);
 		  inp_textIn(vrange_s, USRINPUT_SIZE, k);
+		  if(strlen(vrange_s))
+		    c->vrange = atoi(vrange_s);
+
+		  // arrow keys increase/decrease value
+		  if(k == SDLK_UP || k == SDLK_RIGHT)
+		    c->vrange++;
+		  if(k == SDLK_DOWN || k == SDLK_LEFT)
+		    c->vrange = c->vrange == 0 ? 0 : c->vrange-1;
+		  snprintf(vrange_s, USRINPUT_SIZE, "%d", c->vrange);
+		  
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
 		      if(strlen(vrange_s))
@@ -810,7 +832,7 @@ void mn_start_norm(int nr_pos)
 		    stamp = SDL_GetTicks();   
 		  if(SDL_GetTicks() - stamp > 2000)
 		    {
-		      *number_s = *dist_s = '\0';
+		      *count_s = *dist_s = '\0';
 		      state = 1;
 		    }
 		}
@@ -823,8 +845,19 @@ void mn_start_norm(int nr_pos)
 		  snprintf(tmpstr, SMALL_STRSIZE, "WHY NOT %i? ", c_sugg->dist);
 		  mn_hovertext(cfg->screen_x*0.1,cfg->screen_y*0.8, tmpstr);
 
+		  // text input
 		  mn_prompt(cfg->screen_x*0.1 + 21*8,cfg->screen_y*0.4);
 		  inp_textIn(dist_s, USRINPUT_SIZE, k);
+		  if(strlen(dist_s))
+		    c->dist = atoi(dist_s);
+
+		  // arrow keys increase/decrease value
+		  if(k == SDLK_UP || k == SDLK_RIGHT)
+		    c->dist++;
+		  if(k == SDLK_DOWN || k == SDLK_LEFT)
+		    c->dist = c->dist == 0 ? 0 : c->dist-1;
+		  snprintf(dist_s, USRINPUT_SIZE, "%d", c->dist);
+
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
 		      if(strlen(dist_s))
@@ -853,18 +886,29 @@ void mn_start_norm(int nr_pos)
 	 
 	    case 1: // number input
 	      mn_text(cfg->screen_x*0.1,cfg->screen_y*0.3,"number of troops:");
-	      mn_text(cfg->screen_x*0.1 + 19*8, cfg->screen_y*0.3, number_s); 
+	      mn_text(cfg->screen_x*0.1 + 19*8, cfg->screen_y*0.3, count_s); 
 	      if(state == 1)
 		{
 		  snprintf(tmpstr, SMALL_STRSIZE, "MAYBE %i, COMMANDER? ", c_sugg->count);
 		  mn_hovertext(cfg->screen_x*0.1,cfg->screen_y*0.8, tmpstr);
 
+		  // text input
 		  mn_prompt(cfg->screen_x*0.1 + 18*8, cfg->screen_y*0.3);
-		  inp_textIn(number_s, USRINPUT_SIZE, k);
+		  inp_textIn(count_s, USRINPUT_SIZE, k);
+		  if(strlen(count_s))
+		    c->count = atoi(count_s);
+
+		  // arrow keys increase/decrease value
+		  if(k == SDLK_UP || k == SDLK_RIGHT)
+		    c->count++;
+		  if(k == SDLK_DOWN || k == SDLK_LEFT)
+		    c->count = c->count == 0 ? 0 : c->count-1;
+		  snprintf(count_s, USRINPUT_SIZE, "%d", c->count);
+
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
-		      if(strlen(number_s))
-			c->count = atoi(number_s);
+		      if(strlen(count_s))
+			c->count = atoi(count_s);
 		      else
 			c->count = c_sugg->count;
 		   		      
