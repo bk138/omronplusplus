@@ -1,5 +1,7 @@
 in order of importance, these things come to my mind:
 
+* show suggested numbers
+* accept orders dialog redesign
 * rework threads, esp. sound.c
 * opengl mode
 * ki rewrite
