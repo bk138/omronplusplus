@@ -1,6 +1,6 @@
 
 this is OMRON++ - the simplistic peace-endowing warfare simulation.
-        ^^^^^^^
+
 
 
 1) what is it
@@ -12,7 +12,7 @@ this is OMRON++ - the simplistic peace-endowing warfare simulation.
 
 
 1) what is it
-^^^^^^^^^^^^^
+=============
 
 in omron++, you have up to four armies of pixels fighting each other.
 you can choose the number of soldiers on each side and some other parameters.
@@ -24,7 +24,7 @@ mobs) and go hunting together.
 
 
 2) how to use it
-^^^^^^^^^^^^^^^^
+================
 simply follow the menu promptings and enter your choices, then watch the whole 
 thing going.
 
@@ -47,7 +47,7 @@ screensaver ;-) )
 
 
 3) how to compile
-^^^^^^^^^^^^^^^^^
+=================
 
 the prerequisites:
 
