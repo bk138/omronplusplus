@@ -1,6 +1,7 @@
 
 this is OMRON++ - the simplistic peace-endowing warfare simulation.
 
+![OMRON++ logo](logo.jpg "Omron++ Logo")
 
 
 
