@@ -4,6 +4,7 @@ this is OMRON++ - the simplistic peace-endowing warfare simulation.
 ![OMRON++ logo](logo.jpg "Omron++ Logo")
 
 
+[![Build Status](https://travis-ci.org/bk138/omronplusplus.svg?branch=master)](https://travis-ci.org/bk138/omronplusplus)
 
 
 what is it
