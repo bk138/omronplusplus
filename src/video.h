@@ -26,10 +26,6 @@
 #define VIDEO_H
 
 #include "config.h"
-#if defined HAVE_GL_GL_H || defined HAVE_OPENGL_GL_H
-#define HAVE_OPENGL
-#endif
-
 
 /*
   exposed functions
