@@ -7,19 +7,20 @@ set(target_name omron++)
 set(version 1.0rc)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-configure_file(config.h_cmake_in config.h)
-
-find_package(SDL)
-find_package(SDL_gfx)
+find_package(SDL REQUIRED)
+find_package(SDL_gfx REQUIRED)
+find_package(OpenGL)
 if(UNIX)
   set(MATH_LIBRARY m) # for sin()
 endif(UNIX)
 
+configure_file(config.h_cmake_in config.h)
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${SDL_INCLUDE_DIR}
     ${SDLGFX_INCLUDE_DIR}
+    ${OPENGL_INCLUDE_DIR}
 )
 
 set(sources
@@ -49,4 +50,5 @@ target_link_libraries(
     ${SDL_LIBRARY}
     ${SDLGFX_LIBRARY}
     ${MATH_LIBRARY}
+    ${OPENGL_LIBRARIES}
 )
