@@ -24,6 +24,6 @@ install:
 build_script:
   - mkdir build
   - cd build 
-  - cmake .. -DSDL_INCLUDE_DIR=..\deps\libsdl\include -DSDL_LIBRARY=..\deps\libsdl\lib\x64\SDL.lib -DSDLGFX_INCLUDE_DIR=..\deps\libsdl_gfx -DSDLGFX_LIBRARY=..\deps\libsdl\debug\SDL_gfx.lib
+  - cmake .. -DSDL_INCLUDE_DIR=..\deps\libsdl\include -DSDL_LIBRARY=..\deps\libsdl\lib\x64\SDL.lib -DSDLGFX_INCLUDE_DIR=..\deps\libsdl_gfx -DSDLGFX_LIBRARY=..\deps\libsdl_gfx\Debug\SDL_gfx.lib
   - cmake --build .
 
