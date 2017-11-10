@@ -741,11 +741,14 @@ void mn_start_norm(int nr_pos)
 		    c->mbsz = atoi(mbsz_s);
 
 		  // arrow keys increase/decrease value
-		  if(k == SDLK_UP || k == SDLK_RIGHT)
-		    c->mbsz++;
-		  if(k == SDLK_DOWN || k == SDLK_LEFT)
-		    c->mbsz = c->mbsz == 0 ? 0 : c->mbsz-1;
-		  snprintf(mbsz_s, USRINPUT_SIZE, "%d", c->mbsz);
+		  if(k == SDLK_UP || k == SDLK_RIGHT) {
+		      c->mbsz++;
+		      snprintf(mbsz_s, USRINPUT_SIZE, "%d", c->mbsz);
+		  }
+		  if(k == SDLK_DOWN || k == SDLK_LEFT) {
+		      c->mbsz = c->mbsz <= 1 ? 1 : c->mbsz-1;
+		      snprintf(mbsz_s, USRINPUT_SIZE, "%d", c->mbsz);
+		  }
 
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
@@ -756,6 +759,9 @@ void mn_start_norm(int nr_pos)
 
 		      if(c->mbsz < 1)
 			c->mbsz = 1;
+
+		      // show chosen value, from user or suggested
+		      snprintf(mbsz_s, USRINPUT_SIZE, "%d", c->mbsz);
 
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
@@ -792,11 +798,14 @@ void mn_start_norm(int nr_pos)
 		    c->vrange = atoi(vrange_s);
 
 		  // arrow keys increase/decrease value
-		  if(k == SDLK_UP || k == SDLK_RIGHT)
-		    c->vrange++;
-		  if(k == SDLK_DOWN || k == SDLK_LEFT)
-		    c->vrange = c->vrange == 0 ? 0 : c->vrange-1;
-		  snprintf(vrange_s, USRINPUT_SIZE, "%d", c->vrange);
+		  if(k == SDLK_UP || k == SDLK_RIGHT) {
+		      c->vrange++;
+		      snprintf(vrange_s, USRINPUT_SIZE, "%d", c->vrange);
+		  }
+		  if(k == SDLK_DOWN || k == SDLK_LEFT) {
+		      c->vrange = c->vrange <= 1 ? 1 : c->vrange-1;
+		      snprintf(vrange_s, USRINPUT_SIZE, "%d", c->vrange);
+		  }
 		  
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
@@ -807,6 +816,10 @@ void mn_start_norm(int nr_pos)
 
 		      if(c->vrange < 1)
 			c->vrange = 1;
+
+		      // show chosen value, from user or suggested
+		      snprintf(vrange_s, USRINPUT_SIZE, "%d", c->vrange);
+
 		      //  try vrange
 		      if(ki_testArmyCfg(c))
 			{
@@ -852,18 +865,24 @@ void mn_start_norm(int nr_pos)
 		    c->dist = atoi(dist_s);
 
 		  // arrow keys increase/decrease value
-		  if(k == SDLK_UP || k == SDLK_RIGHT)
-		    c->dist++;
-		  if(k == SDLK_DOWN || k == SDLK_LEFT)
-		    c->dist = c->dist == 0 ? 0 : c->dist-1;
-		  snprintf(dist_s, USRINPUT_SIZE, "%d", c->dist);
-
+		  if(k == SDLK_UP || k == SDLK_RIGHT) {
+		      c->dist++;
+		      snprintf(dist_s, USRINPUT_SIZE, "%d", c->dist);
+		  }
+		  if(k == SDLK_DOWN || k == SDLK_LEFT) {
+		      c->dist = c->dist == 0 ? 0 : c->dist-1;
+		      snprintf(dist_s, USRINPUT_SIZE, "%d", c->dist);
+		  }
+		  
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
 		      if(strlen(dist_s))
 			c->dist = atoi(dist_s);
 		      else
 			c->dist = c_sugg->dist;
+		      
+		      // show chosen value, from user or suggested
+		      snprintf(dist_s, USRINPUT_SIZE, "%d", c->dist);
 		   
 		      // try count and dist
 		      if(ki_testArmyCfg(c))
@@ -899,11 +918,14 @@ void mn_start_norm(int nr_pos)
 		    c->count = atoi(count_s);
 
 		  // arrow keys increase/decrease value
-		  if(k == SDLK_UP || k == SDLK_RIGHT)
-		    c->count++;
-		  if(k == SDLK_DOWN || k == SDLK_LEFT)
-		    c->count = c->count == 0 ? 0 : c->count-1;
-		  snprintf(count_s, USRINPUT_SIZE, "%d", c->count);
+		  if(k == SDLK_UP || k == SDLK_RIGHT) {
+		      c->count++;
+		      snprintf(count_s, USRINPUT_SIZE, "%d", c->count);
+		  }
+		  if(k == SDLK_DOWN || k == SDLK_LEFT) {
+		      c->count = c->count == 0 ? 0 : c->count-1;
+		      snprintf(count_s, USRINPUT_SIZE, "%d", c->count);
+		  }
 
 		  if(k == SDLK_RETURN || k == SDLK_KP_ENTER)
 		    {
@@ -911,7 +933,10 @@ void mn_start_norm(int nr_pos)
 			c->count = atoi(count_s);
 		      else
 			c->count = c_sugg->count;
-		   		      
+
+		      // show chosen value, from user or suggested
+		      snprintf(count_s, USRINPUT_SIZE, "%d", c->count);
+		      
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
 		      snd_beep(SND_F_MOVE, SND_D_MOVE, 0);
 		      snd_beep(SND_F_ENTER, SND_D_ENTER, 1);		      
