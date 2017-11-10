@@ -11,8 +11,8 @@ install:
   - curl -fsSL -o libsdl.zip https://libsdl.org/release/SDL-devel-1.2.15-VC.zip
   - 7z x libsdl.zip
   # libSDL_gfx expects libs at a certain place
-  - mkdir SDL-1.2.15\VisualC\Debug
-  - copy SDL-1.2.15\lib\x86\* SDL-1.2.15\VisualC\Debug
+  - mkdir SDL-1.2.15\VisualC\SDL\Debug
+  - copy SDL-1.2.15\lib\x86\* SDL-1.2.15\VisualC\SDL\Debug
   - copy SDL-1.2.15 libsdl
   # libSDL_gfx
   - curl -fsSL -o libsdl_gfx.tar.gz http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.26.tar.gz
