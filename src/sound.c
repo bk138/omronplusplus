@@ -20,6 +20,9 @@
 
 
 #include <stdlib.h>
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 #include "SDL.h"
 #include "SDL_thread.h"

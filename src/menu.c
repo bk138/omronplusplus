@@ -1744,7 +1744,7 @@ int mn_textBB(Sint32 bx, Sint32 by, Uint32 w, Uint32 h, const char *text, Sint32
   Uint32 wordlen = 0, linelen = 0, lineno = 0;
   const Uint32 maxlinelen = w / 8;
   
-  char linebuf[maxlinelen + 1];
+  char *linebuf = malloc(maxlinelen + 1);
   
   Sint8 nl = 0;
   Sint8 done = 0;
@@ -1824,6 +1824,7 @@ int mn_textBB(Sint32 bx, Sint32 by, Uint32 w, Uint32 h, const char *text, Sint32
 	  linestart = wordstart = txtpos;
 	}
     }
+  free(linebuf);
   return lineno;
 }
 

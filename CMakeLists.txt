@@ -48,6 +48,7 @@ add_executable(${target_name} ${sources})
 target_link_libraries(
     ${target_name}
     ${SDL_LIBRARY}
+    ${SDLMAIN_LIBRARY}
     ${SDLGFX_LIBRARY}
     ${MATH_LIBRARY}
     ${OPENGL_LIBRARIES}
