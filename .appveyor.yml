@@ -4,6 +4,7 @@ os:
   - Visual Studio 2015
 
 install:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
   - mkdir deps
   - cd deps
   # libSDL
