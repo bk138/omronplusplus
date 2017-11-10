@@ -19,7 +19,7 @@ install:
   - 7z x libsdl_gfx.tar.gz -so | 7z x -si -ttar > nul
   - move SDL_gfx-2.0.26 libsdl_gfx
   - cd libsdl_gfx
-  - msbuild SDL_gfx_VS2015.sln
+  - msbuild SDL_gfx_VS2010.sln
   - cd ..
   # go back to source root
   - cd ..
