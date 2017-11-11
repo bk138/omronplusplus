@@ -44,6 +44,10 @@ set(sources
     src/main.c
 )
 
+if(WIN32)
+    set(sources ${sources} src/omron++.rc)
+endif(WIN32)
+
 add_executable(${target_name} ${sources})
 
 target_link_libraries(
