@@ -64,12 +64,21 @@ target_link_libraries(
 # install directives
 #
 
-include(GNUInstallDirs)
+if(WIN32)
+    install(TARGETS ${target_name} RUNTIME DESTINATION .)
+    install(FILES src/msw/SDL.dll DESTINATION .)
+    install(FILES src/msw/SDL_gfx.dll DESTINATION .)
+    install(FILES src/msw/README-SDL DESTINATION .)
+endif(WIN32)
 
-install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(FILES data/omronplusplus.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES README.md AUTHORS ChangeLog NEWS DESTINATION ${CMAKE_INSTALL_DOCDIR})
-install(FILES data/omron++.png DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
+if(UNIX)
+    include(GNUInstallDirs)
+
+    install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(FILES data/omronplusplus.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    install(FILES README.md AUTHORS ChangeLog NEWS DESTINATION ${CMAKE_INSTALL_DOCDIR})
+    install(FILES data/omron++.png DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
+endif(UNIX)
 
 #
 # packaging directives
@@ -80,6 +89,10 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 
+if(WIN32)
+    set(CPACK_GENERATOR "NSIS")
+
+endif(WIN32)
 
 if(UNIX)
     set(CPACK_GENERATOR "DEB")
