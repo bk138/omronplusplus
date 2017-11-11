@@ -1,0 +1,10 @@
+[Desktop Entry]
+Exec=omron++
+Icon=omron++
+Name=Omron++
+Type=Application
+Comment=The simplistic peace-endowing warfare simulation.
+Terminal=false
+StartupNotify=false
+Categories=Application;Game;Simulation;
+

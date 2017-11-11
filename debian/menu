@@ -1,2 +1,0 @@
-?package(omron++):needs="X11" section="Games/Simulation"\
-  title="Omron++" command="/usr/games/omron++"

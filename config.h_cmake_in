@@ -3,5 +3,5 @@
 #define HAVE_OPENGL "${OPENGL_FOUND}"
 
 /* Version number of package */
-#define VERSION "${version}"
+#define VERSION "${PROJECT_VERSION}"
 

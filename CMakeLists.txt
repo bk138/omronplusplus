@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
-project(omron++ LANGUAGES C)
+project(omron++
+    VERSION 1.0.0
+    LANGUAGES C)
 
 include(CheckFunctionExists)
 
 set(target_name omron++)
-set(version 1.0rc)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 find_package(SDL REQUIRED)
@@ -62,8 +63,32 @@ target_link_libraries(
 include(GNUInstallDirs)
 
 install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(FILES src/omron++.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES src/omronplusplus.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES README.md AUTHORS ChangeLog NEWS DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(FILES src/omron++.png src/omron++_32.xpm DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
 
+#
+# packaging directives
+#
+
+set(CPACK_STRIP_FILES true)
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+
+if(UNIX)
+    set(CPACK_GENERATOR "DEB")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Beier <dontmind@freeshell.org>")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "misc")
+    set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "The simplistic peace-endowing warfare simulation.
+ In omron++, you have up to four armies of pixels fighting each other.
+ You can choose the number of soldiers on each side and some other parameters.
+ If you give them a certain 'mobsize', they will form groups of pixels (called
+ mobs) and go hunting together.")
+    set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+    set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+endif(UNIX)
+
+include(CPack)
 
