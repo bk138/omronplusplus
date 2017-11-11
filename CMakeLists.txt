@@ -53,3 +53,17 @@ target_link_libraries(
     ${MATH_LIBRARY}
     ${OPENGL_LIBRARIES}
 )
+
+
+#
+# install directives
+#
+
+include(GNUInstallDirs)
+
+install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES src/omron++.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES README.md AUTHORS ChangeLog NEWS DESTINATION ${CMAKE_INSTALL_DOCDIR})
+install(FILES src/omron++.png src/omron++_32.xpm DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
+
+
