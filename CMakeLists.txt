@@ -95,7 +95,7 @@ if(WIN32)
     set(CPACK_NSIS_MUI_FINISHPAGE_RUN ${target_name})
 endif(WIN32)
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     set(CPACK_GENERATOR "DEB")
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Beier <dontmind@freeshell.org>")
     set(CPACK_DEBIAN_PACKAGE_SECTION "misc")
@@ -106,7 +106,7 @@ if(UNIX)
  mobs) and go hunting together.")
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
     set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
-endif(UNIX)
+endif(UNIX AND NOT APPLE)
 
 include(CPack)
 
