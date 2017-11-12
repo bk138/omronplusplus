@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
   */
 
   ut_log("\n:::  omron++ welcomes you!  :::\n\n");
-  ut_log("Copyright (C) 2005-2009 Christian Beier <dontmind@freeshell.org>.\n");
+  ut_log("Copyright (C) 2005-2017 Christian Beier <dontmind@freeshell.org>.\n");
   ut_log("omron++ is free software, licensed under the GPL.\n\n");
   ut_log("use 'p' to pause, 's' to take a screenshot, 'f' to toggle fullscreen mode, 'm' to (un)mute sound or 'q' to flee...\n\n");
 
