@@ -92,6 +92,7 @@ set(CPACK_PACKAGE_EXECUTABLES "${target_name};Omron++")
 if(WIN32)
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/src/omron++.ico)
+    set(CPACK_NSIS_MUI_FINISHPAGE_RUN ${target_name})
 endif(WIN32)
 
 if(UNIX)
