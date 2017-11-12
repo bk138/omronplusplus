@@ -33,6 +33,10 @@
 #include "menu.h"
 #include "cfg.h"
 
+#ifdef _MSC_VER
+// disable the console window that gets started as well (https://stackoverflow.com/a/6882500/361413)
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
 
 
 /*
