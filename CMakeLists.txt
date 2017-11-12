@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(omron++
+project(Omron++
     VERSION 1.0.0
     LANGUAGES C)
 
