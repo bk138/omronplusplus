@@ -65,8 +65,8 @@ target_link_libraries(
 #
 
 if(WIN32)
-    install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-    install(FILES src/msw/SDL.dll src/msw/SDL_gfx.dll src/msw/README-SDL DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS ${target_name} RUNTIME DESTINATION bin/)
+    install(FILES src/msw/SDL.dll src/msw/SDL_gfx.dll src/msw/README-SDL DESTINATION bin/)
 endif(WIN32)
 
 if(UNIX)
