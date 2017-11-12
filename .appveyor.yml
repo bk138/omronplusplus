@@ -22,4 +22,7 @@ build_script:
   - cd build 
   - cmake .. -DSDL_INCLUDE_DIR=..\deps\libsdl\include -DSDL_LIBRARY=..\src\msw\SDL.lib -DSDLMAIN_LIBRARY=..\src\msw\SDLmain.lib -DSDLGFX_INCLUDE_DIR=..\deps\libsdl_gfx -DSDLGFX_LIBRARY=..\src\msw\SDL_gfx.lib
   - cmake --build .
+  # test packaging as well
+  - cmake --build . --config Release
+  - cpack
 
