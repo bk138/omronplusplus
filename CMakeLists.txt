@@ -68,6 +68,8 @@ if(WIN32)
     install(TARGETS ${target_name} RUNTIME DESTINATION bin/)
     install(FILES src/msw/SDL.dll src/msw/SDL_gfx.dll src/msw/README-SDL DESTINATION bin/)
     install(FILES README.md DESTINATION . RENAME Readme.txt)
+    install(FILES NEWS DESTINATION . RENAME ReleaseNotes.txt)
+    install(FILES COPYING DESTINATION . RENAME License.txt)
 endif(WIN32)
 
 if(UNIX)
