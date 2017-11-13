@@ -53,10 +53,10 @@ the prerequisites:
     - libSDL-gfx devel package version >= 2.0.9
     
 to compile:
-    - ./autogen.sh
-    - if crosscompiling with MinGW: 
-      ./autogen.sh --build=<your build system type> --host=i586-mingw32msvc --with-sdl-config=<your win32 sdl-config>
-    - type 'make' and cross fingers
+    - mkdir build
+    - cd build
+    - cmake ..
+    - cmake --build .
     
 
 to install:
