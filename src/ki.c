@@ -139,7 +139,7 @@ SDL_Color ki_getColorFromID(Sint8 id)
       c.b = 255;
       break;
     default: // NONE
-      c.unused = 0; // set alpha to 0
+      c.a = 0; // set alpha to 0
       break;
     }
 
@@ -1099,7 +1099,7 @@ static void ki_longRangeScan(army *a, const soldier *joe, Uint8 *choices, Uint8 
       for(i=0; i < choices_nr; ++i)
 	{
 	  dir = choices[i];
-	  scanThreads[dir] = SDL_CreateThread(ki_scanView, a->views[dir]);
+	  scanThreads[dir] = SDL_CreateThread(ki_scanView, "ki_scanView", a->views[dir]);
 	}
 
   
