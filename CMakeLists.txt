@@ -92,8 +92,8 @@ endif(UNIX AND NOT APPLE)
 if(APPLE)
     set(APPS ${CMAKE_CURRENT_BINARY_DIR}/${target_name}.app)  # paths to executables
     set(DIRS "")   # directories to search for prerequisites
-    set(BU_CHMOD_BUNDLE_ITEMS ON) # as per https://cmake.org/Bug/view.php?id=13833
     INSTALL(CODE "
+set(BU_CHMOD_BUNDLE_ITEMS ON) # as per https://cmake.org/Bug/view.php?id=13833
 include(BundleUtilities)
 fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
    " COMPONENT Runtime)
