@@ -154,7 +154,7 @@ void snd_beep(float f, float d, Sint8 nonblock)
 	  // thread set locked to 0 
 	  SDL_WaitThread(t, NULL); // clean up resources
 	  locked = 1;
-	  t = SDL_CreateThread(snd_intern_beep, &t_args);
+	  t = SDL_CreateThread(snd_intern_beep, "snd_beep", &t_args);
 	}
       else
 	snd_intern_beep(&t_args);
@@ -194,7 +194,7 @@ void snd_jingle(Sint8 nonblock)
 	  // thread set locked to 0 
 	  SDL_WaitThread(t, NULL); // clean up resources
 	  locked = 1;
-	  t = SDL_CreateThread(snd_intern_jingle, NULL);
+	  t = SDL_CreateThread(snd_intern_jingle, "snd_jingle", NULL);
 	}
       else
 	snd_intern_jingle();
