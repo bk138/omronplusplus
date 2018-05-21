@@ -31,5 +31,5 @@ script:
   - cd build
   - cmake ..
   - cmake --build .
-  - cpack
+  - cpack -V
 
