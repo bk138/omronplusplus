@@ -161,7 +161,7 @@ int cfg_save(systemcfg *cfg)
       return 0;
     }
   
-  fprintf(cfg_file, cfg_string);
+  fprintf(cfg_file,"%s", cfg_string);
 
   free(cfg_string); // don't need it anymore
   fclose(cfg_file);
