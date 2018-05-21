@@ -14,13 +14,13 @@ before_install:
 - |
   if [[ "${TRAVIS_OS_NAME}" == "linux" ]]
   then
-     sudo apt-get install libsdl-gfx1.2-dev
+     sudo apt-get install libsdl2-gfx-dev
   fi
 - |
   if [[ "${TRAVIS_OS_NAME}" == "osx" ]]
   then
      brew update
-     brew install sdl_gfx
+     brew install sdl2_gfx
   fi
 
 
