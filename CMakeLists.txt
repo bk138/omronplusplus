@@ -48,7 +48,16 @@ if(WIN32)
     set(sources ${sources} src/omron++.rc)
 endif(WIN32)
 
-add_executable(${target_name} ${sources})
+if(APPLE)
+    set(target_name Omron++)
+    set(MACOSX_BUNDLE_COPYRIGHT "© Christian Beier (dontmind@freeshell.org), 2008-2018")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION})
+    set(MACOSX_BUNDLE_ICON_FILE omron++.icns)
+    set(sources ${sources} src/omron++.icns)
+    set_source_files_properties(src/omron++.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif(APPLE)
+
+add_executable(${target_name} MACOSX_BUNDLE ${sources})
 
 target_link_libraries(
     ${target_name}
@@ -72,14 +81,23 @@ if(WIN32)
     install(FILES COPYING DESTINATION . RENAME License.txt)
 endif(WIN32)
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     include(GNUInstallDirs)
-
     install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     install(FILES data/omronplusplus.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES README.md AUTHORS ChangeLog NEWS DESTINATION ${CMAKE_INSTALL_DOCDIR})
     install(FILES data/omron++.png DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
-endif(UNIX)
+endif(UNIX AND NOT APPLE)
+
+if(APPLE)
+    set(APPS ${CMAKE_CURRENT_BINARY_DIR}/${target_name}.app)  # paths to executables
+    set(DIRS "")   # directories to search for prerequisites
+    INSTALL(CODE "
+include(BundleUtilities)
+fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
+   " COMPONENT Runtime)
+    INSTALL(TARGETS ${target_name} BUNDLE DESTINATION . COMPONENT Runtime)
+endif(APPLE)
 
 #
 # packaging directives
@@ -110,6 +128,12 @@ if(UNIX AND NOT APPLE)
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
     set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 endif(UNIX AND NOT APPLE)
+
+if(APPLE)
+    set(CPACK_GENERATOR "DragNDrop")
+    set(CPACK_PACKAGE_FILE_NAME "${target_name}-${PROJECT_VERSION}")
+    set(CPACK_INSTALL_PREFIX .) # for some reason defaults to /usr/local/
+endif(APPLE)
 
 include(CPack)
 
