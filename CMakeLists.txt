@@ -8,8 +8,8 @@ include(CheckFunctionExists)
 set(target_name omron++)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-find_package(SDL REQUIRED)
-find_package(SDL_gfx REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_gfx REQUIRED)
 find_package(OpenGL)
 if(UNIX)
   set(MATH_LIBRARY m) # for sin()
@@ -19,8 +19,8 @@ configure_file(config.h_cmake_in config.h)
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${SDL_INCLUDE_DIR}
-    ${SDLGFX_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
+    ${SDL2GFX_INCLUDE_DIR}
     ${OPENGL_INCLUDE_DIR}
 )
 
@@ -61,9 +61,8 @@ add_executable(${target_name} MACOSX_BUNDLE ${sources})
 
 target_link_libraries(
     ${target_name}
-    ${SDL_LIBRARY}
-    ${SDLMAIN_LIBRARY}
-    ${SDLGFX_LIBRARY}
+    ${SDL2_LIBRARY}
+    ${SDL2GFX_LIBRARY}
     ${MATH_LIBRARY}
     ${OPENGL_LIBRARIES}
 )
