@@ -98,6 +98,7 @@ include(BundleUtilities)
 fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
    " COMPONENT Runtime)
     INSTALL(TARGETS ${target_name} BUNDLE DESTINATION . COMPONENT Runtime)
+    INSTALL(FILES README.md DESTINATION . RENAME Readme.txt)
 endif(APPLE)
 
 #
