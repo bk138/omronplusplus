@@ -53,6 +53,7 @@ the prerequisites:
     - libSDL-gfx devel package version >= 2.0.9
     
 to compile:
+
     - mkdir build
     - cd build
     - cmake ..
