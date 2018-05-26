@@ -28,10 +28,10 @@
 // init input subsystem
 void inp_init();
 // get input, returns SDLK_UNKNOWN if it's nothing
-SDLKey inp_checkInput();
+SDL_Keycode inp_checkInput();
 
 // append char corresponding to k to string
-int inp_textIn(char *string, int limit, SDLKey k);
+int inp_textIn(char *string, int limit, SDL_Keycode k);
 
 void inp_printInfo();
 

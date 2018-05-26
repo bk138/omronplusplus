@@ -47,14 +47,14 @@ extern char do_return[4];
   internal variables
 */
 // input "buffer" and marker
-SDLKey input;
+SDL_Keycode input;
 SDL_mutex *input_lock;
 SDL_Joystick *joystick;
 
 /*
   internal functions:
 */
-static int inp_filterEvents(const SDL_Event *event);
+static int inp_filterEvents(void *userdata, SDL_Event *event);
 static int inp_handleKeyboard();
 
 
@@ -64,12 +64,12 @@ static int inp_handleKeyboard();
 void inp_init()
 {
   // setup event filter
-  SDL_SetEventFilter(inp_filterEvents);
+  SDL_SetEventFilter(inp_filterEvents, NULL);
 
   input_lock = SDL_CreateMutex();
 
   // and start keyboard handler thread
-  SDL_CreateThread(inp_handleKeyboard, NULL);
+  SDL_CreateThread(inp_handleKeyboard, "inp_handleKeyboard", NULL);
 
   // open first joystick
   if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
@@ -96,7 +96,7 @@ void inp_printInfo()
 }
 
 
-int inp_filterEvents(const SDL_Event *event)
+int inp_filterEvents(void *userdata, SDL_Event *event)
 {
   switch (event->type) 
     {
@@ -130,7 +130,7 @@ int inp_handleKeyboard()
   while(!quit) 
     {
       // we're only interested in key events
-      found = SDL_PeepEvents(events, 20, SDL_GETEVENT, SDL_KEYDOWNMASK|SDL_KEYUPMASK);
+      found = SDL_PeepEvents(events, 20, SDL_GETEVENT, SDL_KEYDOWN,SDL_KEYUP);
 
       for(i=0; i<found; ++i) 
 	{
@@ -153,19 +153,19 @@ int inp_handleKeyboard()
 		  mn_msg("SCREENSHOT TAKEN");
 		  break;
 		case SDLK_1: 
-		case SDLK_KP1: 
+		case SDLK_KP_1: 
 		  do_return[0] = 1;
 		  break;
 		case SDLK_2: 
-		case SDLK_KP2: 
+		case SDLK_KP_2: 
 		  do_return[1] = 1;
 		  break;
 		case SDLK_3: 
-		case SDLK_KP3:
+		case SDLK_KP_3:
 		  do_return[2] = 1; 
 		  break;
 		case SDLK_4: 
-		case SDLK_KP4:
+		case SDLK_KP_4:
 		  do_return[3] = 1; 
 		  break;
 		  
@@ -184,19 +184,19 @@ int inp_handleKeyboard()
 	      switch( events[i].key.keysym.sym ) 
 		{
 		case SDLK_1: 
-		case SDLK_KP1: 
+		case SDLK_KP_1: 
 		  do_return[0] = 0; 
 		  break;
 		case SDLK_2: 
-		case SDLK_KP2: 
+		case SDLK_KP_2: 
 		  do_return[1] = 0; 
 		  break;
 		case SDLK_3: 
-		case SDLK_KP3: 
+		case SDLK_KP_3: 
 		  do_return[2] = 0; 
 		  break;
 		case SDLK_4: 
-		case SDLK_KP4: 
+		case SDLK_KP_4: 
 		  do_return[3] = 0; 
 		  break;
 		  
@@ -219,9 +219,9 @@ int inp_handleKeyboard()
 /*
   read key from global input var
 */
-SDLKey inp_checkInput()
+SDL_Keycode inp_checkInput()
 {
-  SDLKey retval; 
+  SDL_Keycode retval; 
 
 #ifndef unix
   // with win32 there's no extra 'event gather'-thread
@@ -255,59 +255,59 @@ SDLKey inp_checkInput()
   append char corresponding to k to string
   by now reads only numbers ...
 */
-int inp_textIn(char *string, int limit, SDLKey k)
+int inp_textIn(char *string, int limit, SDL_Keycode k)
 {
   --limit;
 
   switch(k) 
     {
     case SDLK_0:
-    case SDLK_KP0:
+    case SDLK_KP_0:
       if (strlen(string) < limit)
 	strcat(string,"0");
       break;
     case SDLK_1:
-    case SDLK_KP1:
+    case SDLK_KP_1:
       if (strlen(string) < limit)
 	strcat(string,"1");
       break;
     case SDLK_2:
-    case SDLK_KP2:
+    case SDLK_KP_2:
       if (strlen(string) < limit)
 	strcat(string,"2");
       break;
     case SDLK_3:
-    case SDLK_KP3:
+    case SDLK_KP_3:
       if (strlen(string) < limit)
 	strcat(string,"3");
       break;
     case SDLK_4:
-    case SDLK_KP4:
+    case SDLK_KP_4:
       if (strlen(string) < limit)
 	strcat(string,"4");
       break;
     case SDLK_5:
-    case SDLK_KP5:
+    case SDLK_KP_5:
       if (strlen(string) < limit)
 	strcat(string,"5");
       break;
     case SDLK_6:
-    case SDLK_KP6:
+    case SDLK_KP_6:
       if (strlen(string) < limit)
 	strcat(string,"6");
       break;
     case SDLK_7:
-    case SDLK_KP7:
+    case SDLK_KP_7:
       if (strlen(string) < limit)
 	strcat(string,"7");
       break;
     case SDLK_8:
-    case SDLK_KP8:
+    case SDLK_KP_8:
       if (strlen(string) < limit)
 	strcat(string,"8");
       break;
     case SDLK_9:
-    case SDLK_KP9:
+    case SDLK_KP_9:
       if (strlen(string) < limit)
 	strcat(string,"9");
       break;
