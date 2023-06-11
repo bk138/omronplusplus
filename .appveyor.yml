@@ -1,6 +1,6 @@
 
 os:
-  - Visual Studio 2015
+  - Visual Studio 2019
 
 install:
   - mkdir deps
@@ -20,7 +20,7 @@ install:
 build_script:
   - mkdir build
   - cd build 
-  - cmake .. -DSDL_INCLUDE_DIR=..\deps\libsdl\include -DSDL_LIBRARY=..\src\msw\SDL.lib -DSDLMAIN_LIBRARY=..\src\msw\SDLmain.lib -DSDLGFX_INCLUDE_DIR=..\deps\libsdl_gfx -DSDLGFX_LIBRARY=..\src\msw\SDL_gfx.lib
+  - cmake .. -A Win32 -DSDL_INCLUDE_DIR=..\deps\libsdl\include -DSDL_LIBRARY=..\src\msw\SDL.lib -DSDLMAIN_LIBRARY=..\src\msw\SDLmain.lib -DSDL_GFX_INCLUDE_DIRS=..\deps\libsdl_gfx -DSDL_GFX_LIBRARIES=..\src\msw\SDL_gfx.lib
   - cmake --build .
   # test packaging as well
   - cmake --build . --config Release
