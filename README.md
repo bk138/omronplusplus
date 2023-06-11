@@ -48,17 +48,18 @@ how to compile
 
 the prerequisites:
 
-    - the usual c-compiler with headers and stuff 
-    - libSDL devel package version >= 1.2.0
-    - libSDL-gfx devel package version >= 2.0.9
+- the usual c-compiler with headers and stuff
+- libSDL devel package version >= 1.2.0
+- libSDL-gfx devel package version >= 2.0.9
     
 to compile:
 
-    - mkdir build
-    - cd build
-    - cmake ..
-    - cmake --build .
-    
+```
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
 
 to install:
     - 'make install' as root 
