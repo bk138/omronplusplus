@@ -178,7 +178,7 @@ static char* cfg_fullpath()
   char *usrpath;
   char *filename;
 
-  if((usrpath = getenv("HOME")))   // unix
+  if((usrpath = getenv("XDG_CONFIG_HOME")) || (usrpath = getenv("HOME")))   // unix
     filename = "/."CFGFILE;
   else  
     if((usrpath = getenv("AppData"))) // win-nt
