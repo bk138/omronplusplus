@@ -1,6 +1,6 @@
 [Desktop Entry]
 Exec=omron++
-Icon=omron++
+Icon=net.christianbeier.Omronplusplus
 Name=Omron++
 Type=Application
 Comment=The simplistic peace-endowing warfare simulation.
