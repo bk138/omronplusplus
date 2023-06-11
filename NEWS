@@ -1,4 +1,4 @@
-omron++ 1.0.0 - "when the sun finally sets" - 
+omron++ 1.0.0 - "when the sun finally sets" - may 2018
  * nice but useless OpenGL mode
  * fixed a bug where user was not able to completely delete input in the menu
  * ported to Windows and OSX
