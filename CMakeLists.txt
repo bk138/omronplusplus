@@ -7,6 +7,17 @@ include(CheckFunctionExists)
 
 set(target_name omron++)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(CMAKE_GENERATOR MATCHES "Unix Makefiles|Ninja")
+# some LSP servers expect compile_commands.json in the project root
+add_custom_target(
+    copy-compile-commands ALL
+    ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif(CMAKE_GENERATOR MATCHES "Unix Makefiles|Ninja")
+
 
 find_package(SDL REQUIRED)
 find_package(SDL_gfx REQUIRED)
