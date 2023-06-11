@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.25)
 project(omron++
     VERSION 1.0.0
     LANGUAGES C)
@@ -20,7 +20,7 @@ configure_file(config.h_cmake_in config.h)
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${SDL_INCLUDE_DIR}
-    ${SDLGFX_INCLUDE_DIR}
+    ${SDL_GFX_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIR}
 )
 
@@ -63,7 +63,7 @@ target_link_libraries(
     ${target_name}
     ${SDL_LIBRARY}
     ${SDLMAIN_LIBRARY}
-    ${SDLGFX_LIBRARY}
+    ${SDL_GFX_LIBRARIES}
     ${MATH_LIBRARY}
     ${OPENGL_LIBRARIES}
 )
