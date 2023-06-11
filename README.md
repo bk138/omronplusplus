@@ -4,7 +4,7 @@ this is OMRON++ - the simplistic peace-endowing warfare simulation.
 ![OMRON++ logo](logo.jpg "Omron++ Logo")
 
 
-[![Build Status](https://travis-ci.org/bk138/omronplusplus.svg?branch=master)](https://travis-ci.org/bk138/omronplusplus) [![Build status](https://ci.appveyor.com/api/projects/status/cy24qkawvq8ldwxn/branch/master?svg=true)](https://ci.appveyor.com/project/bk138/omronplusplus/branch/master)
+[![CI](https://github.com/bk138/omronplusplus/actions/workflows/ci.yml/badge.svg)](https://github.com/bk138/omronplusplus/actions/workflows/ci.yml) [![Build status](https://ci.appveyor.com/api/projects/status/cy24qkawvq8ldwxn/branch/master?svg=true)](https://ci.appveyor.com/project/bk138/omronplusplus/branch/master)
 
 
 
