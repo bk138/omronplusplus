@@ -66,7 +66,7 @@ systemcfg* cfg_load()
     first, load defaults
   */
   cfg->sound = 1;
-  cfg->smp = 0;
+  cfg->smp = 1;
   cfg->benchmark = 0;  
   cfg->opengl = 0;
   cfg->fullscreen = 0;
